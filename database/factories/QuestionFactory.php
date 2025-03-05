@@ -14,7 +14,11 @@ class QuestionFactory extends Factory
     {
         return [
             'quiz_id' => Quiz::factory(),
-            'question_text' => $this->faker->sentence(),
+            'question_text' => $this->faker->sentence(10) . '?',
+            'question_type' => 'single choice', // Will be overridden in seeder
+            'difficulty' => 'medium', // Will be overridden in seeder
+            'img_url' => null, // Will be overridden in seeder
+            'time_to_answer' => 30, // Will be overridden in seeder
         ];
     }
 }

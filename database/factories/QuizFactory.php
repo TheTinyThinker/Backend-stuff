@@ -13,8 +13,13 @@ class QuizFactory extends Factory
     public function definition()
     {
         return [
-            'title' => $this->faker->sentence(3),
-            'user_id' => User::factory(), // Assign a random user
+            'title' => $this->faker->sentence(4),
+            'description' => $this->faker->paragraph(),
+            'category' => null, // Set in the seeder
+            'img_url' => null, // Set in the seeder
+            'show_correct_answer' => false, // Set in the seeder
+            'is_public' => true, // Default to public, can be overridden in seeder
+            'user_id' => User::factory(),
         ];
     }
 }

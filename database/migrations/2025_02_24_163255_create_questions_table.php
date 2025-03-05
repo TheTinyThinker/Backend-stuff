@@ -15,10 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('quiz_id')->constrained()->onDelete('cascade');
             $table->text('question_text');
+            $table->string('question_type')->default('single choice');
+            $table->string('difficulty')->nullable();
+            $table->string('img_url')->nullable();
+            $table->integer('time_to_answer')->default(30);
             $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.
