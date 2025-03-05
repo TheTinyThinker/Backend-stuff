@@ -80,11 +80,11 @@
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-login">
                                 <a href="#endpoints-POSTapi-login">POST api/login</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-quizzes">
-                                <a href="#endpoints-GETapi-quizzes">Display a listing of the resource.</a>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-create-room">
+                                <a href="#endpoints-POSTapi-create-room">POST api/create-room</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-quizzes--id-">
-                                <a href="#endpoints-GETapi-quizzes--id-">Display the specified resource.</a>
+                                                                                <li class="tocify-item level-2" data-unique="endpoints-POSTapi-join-room">
+                                <a href="#endpoints-POSTapi-join-room">Join a room using a code.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-logout">
                                 <a href="#endpoints-POSTapi-logout">POST api/logout</a>
@@ -98,14 +98,8 @@
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-DELETEapi-quizzes--id-">
                                 <a href="#endpoints-DELETEapi-quizzes--id-">Remove the specified resource from storage.</a>
                             </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-questions">
-                                <a href="#endpoints-GETapi-questions">Display a listing of the questions.</a>
-                            </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-POSTapi-questions">
                                 <a href="#endpoints-POSTapi-questions">Store a newly created question in the database.</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-questions--id-">
-                                <a href="#endpoints-GETapi-questions--id-">Display the specified question.</a>
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-PUTapi-questions--id-">
                                 <a href="#endpoints-PUTapi-questions--id-">Update the specified question in the database.</a>
@@ -121,12 +115,6 @@
                             </li>
                                                                                 <li class="tocify-item level-2" data-unique="endpoints-PUTapi-friendships--id-">
                                 <a href="#endpoints-PUTapi-friendships--id-">PUT api/friendships/{id}</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-leaderboard">
-                                <a href="#endpoints-GETapi-leaderboard">GET api/leaderboard</a>
-                            </li>
-                                                                                <li class="tocify-item level-2" data-unique="endpoints-GETapi-user-rank--user_id-">
-                                <a href="#endpoints-GETapi-user-rank--user_id-">GET api/user-rank/{user_id}</a>
                             </li>
                                                                         </ul>
                             </ul>
@@ -567,27 +555,27 @@ You can check the Dev Tools console for debugging information.</code></pre>
         </div>
         </form>
 
-                    <h2 id="endpoints-GETapi-quizzes">Display a listing of the resource.</h2>
+                    <h2 id="endpoints-POSTapi-create-room">POST api/create-room</h2>
 
 <p>
 </p>
 
 
 
-<span id="example-requests-GETapi-quizzes">
+<span id="example-requests-POSTapi-create-room">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/quizzes" \
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/api/create-room" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/quizzes"
+    "http://localhost/api/create-room"
 );
 
 const headers = {
@@ -596,177 +584,59 @@ const headers = {
 };
 
 fetch(url, {
-    method: "GET",
+    method: "POST",
     headers,
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
-<span id="example-responses-GETapi-quizzes">
-            <blockquote>
-            <p>Example response (200):</p>
-        </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: http://localhost:5173
-access-control-allow-credentials: true
- </code></pre></details>         <pre>
-
-<code class="language-json" style="max-height: 300px;">[
-    {
-        &quot;id&quot;: 1,
-        &quot;user_id&quot;: 3,
-        &quot;title&quot;: &quot;Dolores temporibus quia quam.&quot;,
-        &quot;description&quot;: &quot;Expedita natus laudantium in ut ut voluptatem eaque. Suscipit animi impedit et nihil. Doloremque ab et facilis occaecati illum. Incidunt omnis molestiae voluptas distinctio veniam dicta nostrum.&quot;,
-        &quot;category&quot;: &quot;History&quot;,
-        &quot;img_url&quot;: &quot;https://picsum.photos/id/53/200/200&quot;,
-        &quot;show_correct_answer&quot;: true,
-        &quot;is_public&quot;: true,
-        &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-        &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-        &quot;created_by&quot;: &quot;Kelvin Nienow DVM&quot;,
-        &quot;user&quot;: {
-            &quot;id&quot;: 3,
-            &quot;name&quot;: &quot;Kelvin Nienow DVM&quot;
-        }
-    },
-    {
-        &quot;id&quot;: 2,
-        &quot;user_id&quot;: 8,
-        &quot;title&quot;: &quot;Necessitatibus aut at distinctio.&quot;,
-        &quot;description&quot;: &quot;Necessitatibus itaque deserunt quis in. Veritatis et laboriosam magnam et magnam dolor amet. Odit sit quibusdam totam iure. Officia consequatur non debitis quia.&quot;,
-        &quot;category&quot;: &quot;General Knowledge&quot;,
-        &quot;img_url&quot;: &quot;https://picsum.photos/id/46/200/200&quot;,
-        &quot;show_correct_answer&quot;: true,
-        &quot;is_public&quot;: true,
-        &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-        &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-        &quot;created_by&quot;: &quot;Dr. Clint Kub&quot;,
-        &quot;user&quot;: {
-            &quot;id&quot;: 8,
-            &quot;name&quot;: &quot;Dr. Clint Kub&quot;
-        }
-    },
-    {
-        &quot;id&quot;: 3,
-        &quot;user_id&quot;: 10,
-        &quot;title&quot;: &quot;Repellendus tenetur saepe sint et.&quot;,
-        &quot;description&quot;: &quot;Aspernatur excepturi eum ipsum molestiae quod. Saepe non esse sed rem aspernatur vel repudiandae. Qui aut velit voluptas.&quot;,
-        &quot;category&quot;: &quot;Sports&quot;,
-        &quot;img_url&quot;: &quot;https://picsum.photos/id/84/200/200&quot;,
-        &quot;show_correct_answer&quot;: false,
-        &quot;is_public&quot;: true,
-        &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-        &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-        &quot;created_by&quot;: &quot;Vance Waelchi&quot;,
-        &quot;user&quot;: {
-            &quot;id&quot;: 10,
-            &quot;name&quot;: &quot;Vance Waelchi&quot;
-        }
-    },
-    {
-        &quot;id&quot;: 4,
-        &quot;user_id&quot;: 10,
-        &quot;title&quot;: &quot;Voluptates vero et minima.&quot;,
-        &quot;description&quot;: &quot;Molestiae quam accusamus veniam earum et ut dolore. Quia modi consequatur accusamus voluptatem non. Voluptate maxime id accusamus rem ut esse ducimus dolor. At et non asperiores pariatur exercitationem. Architecto maiores odit adipisci voluptates temporibus aspernatur dolorem incidunt.&quot;,
-        &quot;category&quot;: &quot;Technology&quot;,
-        &quot;img_url&quot;: &quot;https://picsum.photos/id/12/200/200&quot;,
-        &quot;show_correct_answer&quot;: true,
-        &quot;is_public&quot;: true,
-        &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-        &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-        &quot;created_by&quot;: &quot;Vance Waelchi&quot;,
-        &quot;user&quot;: {
-            &quot;id&quot;: 10,
-            &quot;name&quot;: &quot;Vance Waelchi&quot;
-        }
-    },
-    {
-        &quot;id&quot;: 5,
-        &quot;user_id&quot;: 1,
-        &quot;title&quot;: &quot;Nesciunt eos dolor aut.&quot;,
-        &quot;description&quot;: &quot;Repellat et in doloremque qui sit recusandae. Consequatur odio placeat id impedit esse quo. Doloremque quisquam amet voluptatem id consequatur dolorem vel.&quot;,
-        &quot;category&quot;: &quot;Geography&quot;,
-        &quot;img_url&quot;: &quot;https://picsum.photos/id/22/200/200&quot;,
-        &quot;show_correct_answer&quot;: false,
-        &quot;is_public&quot;: true,
-        &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-        &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-        &quot;created_by&quot;: &quot;Gerardo Ebert&quot;,
-        &quot;user&quot;: {
-            &quot;id&quot;: 1,
-            &quot;name&quot;: &quot;Gerardo Ebert&quot;
-        }
-    },
-    {
-        &quot;id&quot;: 6,
-        &quot;user_id&quot;: 16,
-        &quot;title&quot;: &quot;eeewew&quot;,
-        &quot;description&quot;: &quot;ewewewewew&quot;,
-        &quot;category&quot;: null,
-        &quot;img_url&quot;: &quot;nourlyet&quot;,
-        &quot;show_correct_answer&quot;: true,
-        &quot;is_public&quot;: true,
-        &quot;created_at&quot;: &quot;2025-03-03T15:16:12.000000Z&quot;,
-        &quot;updated_at&quot;: &quot;2025-03-03T15:16:12.000000Z&quot;,
-        &quot;created_by&quot;: &quot;test1&quot;,
-        &quot;user&quot;: {
-            &quot;id&quot;: 16,
-            &quot;name&quot;: &quot;test1&quot;
-        }
-    }
-]</code>
- </pre>
-    </span>
-<span id="execution-results-GETapi-quizzes" hidden>
+<span id="example-responses-POSTapi-create-room">
+</span>
+<span id="execution-results-POSTapi-create-room" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-quizzes"></span>:
+                id="execution-response-status-POSTapi-create-room"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-quizzes"
+    <pre class="json"><code id="execution-response-content-POSTapi-create-room"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-quizzes" hidden>
+<span id="execution-error-POSTapi-create-room" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-quizzes">
+    <pre><code id="execution-error-message-POSTapi-create-room">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
 </span>
-<form id="form-GETapi-quizzes" data-method="GET"
-      data-path="api/quizzes"
+<form id="form-POSTapi-create-room" data-method="POST"
+      data-path="api/create-room"
       data-authed="0"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-quizzes', this);">
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-create-room', this);">
     <h3>
         Request&nbsp;&nbsp;&nbsp;
                     <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-quizzes"
-                    onclick="tryItOut('GETapi-quizzes');">Try it out ⚡
+                    id="btn-tryout-POSTapi-create-room"
+                    onclick="tryItOut('POSTapi-create-room');">Try it out ⚡
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-quizzes"
-                    onclick="cancelTryOut('GETapi-quizzes');" hidden>Cancel 🛑
+                    id="btn-canceltryout-POSTapi-create-room"
+                    onclick="cancelTryOut('POSTapi-create-room');" hidden>Cancel 🛑
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-quizzes"
+                    id="btn-executetryout-POSTapi-create-room"
                     data-initial-text="Send Request 💥"
                     data-loading-text="⏱ Sending..."
                     hidden>Send Request 💥
             </button>
             </h3>
             <p>
-            <small class="badge badge-green">GET</small>
-            <b><code>api/quizzes</code></b>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/create-room</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
@@ -774,7 +644,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-quizzes"
+                              name="Content-Type"                data-endpoint="POSTapi-create-room"
                value="application/json"
                data-component="header">
     <br>
@@ -785,7 +655,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-quizzes"
+                              name="Accept"                data-endpoint="POSTapi-create-room"
                value="application/json"
                data-component="header">
     <br>
@@ -793,27 +663,31 @@ You can check the Dev Tools console for debugging information.</code></pre>
             </div>
                         </form>
 
-                    <h2 id="endpoints-GETapi-quizzes--id-">Display the specified resource.</h2>
+                    <h2 id="endpoints-POSTapi-join-room">Join a room using a code.</h2>
 
 <p>
 </p>
 
 
 
-<span id="example-requests-GETapi-quizzes--id-">
+<span id="example-requests-POSTapi-join-room">
 <blockquote>Example request:</blockquote>
 
 
 <div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/quizzes/1" \
+    <pre><code class="language-bash">curl --request POST \
+    "http://localhost/api/join-room" \
     --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
+    --header "Accept: application/json" \
+    --data "{
+    \"room_code\": \"bngzmi\"
+}"
+</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/quizzes/1"
+    "http://localhost/api/join-room"
 );
 
 const headers = {
@@ -821,318 +695,65 @@ const headers = {
     "Accept": "application/json",
 };
 
+let body = {
+    "room_code": "bngzmi"
+};
+
 fetch(url, {
-    method: "GET",
+    method: "POST",
     headers,
+    body: JSON.stringify(body),
 }).then(response =&gt; response.json());</code></pre></div>
 
 </span>
 
-<span id="example-responses-GETapi-quizzes--id-">
-            <blockquote>
-            <p>Example response (200):</p>
-        </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: http://localhost:5173
-access-control-allow-credentials: true
- </code></pre></details>         <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;id&quot;: 1,
-    &quot;user_id&quot;: 3,
-    &quot;title&quot;: &quot;Dolores temporibus quia quam.&quot;,
-    &quot;description&quot;: &quot;Expedita natus laudantium in ut ut voluptatem eaque. Suscipit animi impedit et nihil. Doloremque ab et facilis occaecati illum. Incidunt omnis molestiae voluptas distinctio veniam dicta nostrum.&quot;,
-    &quot;category&quot;: &quot;History&quot;,
-    &quot;img_url&quot;: &quot;https://picsum.photos/id/53/200/200&quot;,
-    &quot;show_correct_answer&quot;: true,
-    &quot;is_public&quot;: true,
-    &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-    &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-    &quot;created_by&quot;: &quot;Kelvin Nienow DVM&quot;,
-    &quot;user&quot;: {
-        &quot;id&quot;: 3,
-        &quot;name&quot;: &quot;Kelvin Nienow DVM&quot;
-    },
-    &quot;questions&quot;: [
-        {
-            &quot;id&quot;: 1,
-            &quot;quiz_id&quot;: 1,
-            &quot;question_text&quot;: &quot;Praesentium nisi fugiat deserunt consequuntur sed nisi culpa.?&quot;,
-            &quot;question_type&quot;: &quot;multiple choice&quot;,
-            &quot;difficulty&quot;: &quot;medium&quot;,
-            &quot;img_url&quot;: &quot;https://picsum.photos/id/116/200/200&quot;,
-            &quot;time_to_answer&quot;: 15,
-            &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-            &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-            &quot;answers&quot;: [
-                {
-                    &quot;id&quot;: 1,
-                    &quot;question_id&quot;: 1,
-                    &quot;answer_text&quot;: &quot;Impedit voluptatem illum rerum consequatur illo nesciunt.&quot;,
-                    &quot;is_correct&quot;: 0,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 2,
-                    &quot;question_id&quot;: 1,
-                    &quot;answer_text&quot;: &quot;Ea est est ut.&quot;,
-                    &quot;is_correct&quot;: 0,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 3,
-                    &quot;question_id&quot;: 1,
-                    &quot;answer_text&quot;: &quot;Nostrum vitae rerum voluptate sed eos.&quot;,
-                    &quot;is_correct&quot;: 1,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 4,
-                    &quot;question_id&quot;: 1,
-                    &quot;answer_text&quot;: &quot;Autem adipisci rerum perspiciatis.&quot;,
-                    &quot;is_correct&quot;: 1,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;
-                }
-            ]
-        },
-        {
-            &quot;id&quot;: 2,
-            &quot;quiz_id&quot;: 1,
-            &quot;question_text&quot;: &quot;Est quaerat voluptatibus sit voluptate et voluptas.?&quot;,
-            &quot;question_type&quot;: &quot;multiple choice&quot;,
-            &quot;difficulty&quot;: &quot;hard&quot;,
-            &quot;img_url&quot;: null,
-            &quot;time_to_answer&quot;: 30,
-            &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-            &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-            &quot;answers&quot;: [
-                {
-                    &quot;id&quot;: 5,
-                    &quot;question_id&quot;: 2,
-                    &quot;answer_text&quot;: &quot;Qui fugit asperiores est alias.&quot;,
-                    &quot;is_correct&quot;: 0,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 6,
-                    &quot;question_id&quot;: 2,
-                    &quot;answer_text&quot;: &quot;Molestiae doloremque nemo sed ea odio iusto.&quot;,
-                    &quot;is_correct&quot;: 0,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 7,
-                    &quot;question_id&quot;: 2,
-                    &quot;answer_text&quot;: &quot;Non sunt repellendus rerum.&quot;,
-                    &quot;is_correct&quot;: 1,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 8,
-                    &quot;question_id&quot;: 2,
-                    &quot;answer_text&quot;: &quot;Beatae expedita dolor esse unde consequatur.&quot;,
-                    &quot;is_correct&quot;: 1,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                }
-            ]
-        },
-        {
-            &quot;id&quot;: 3,
-            &quot;quiz_id&quot;: 1,
-            &quot;question_text&quot;: &quot;Qui molestiae est voluptatem qui enim voluptatum a incidunt est aut doloribus magnam.?&quot;,
-            &quot;question_type&quot;: &quot;multiple choice&quot;,
-            &quot;difficulty&quot;: &quot;hard&quot;,
-            &quot;img_url&quot;: null,
-            &quot;time_to_answer&quot;: 45,
-            &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-            &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-            &quot;answers&quot;: [
-                {
-                    &quot;id&quot;: 9,
-                    &quot;question_id&quot;: 3,
-                    &quot;answer_text&quot;: &quot;Aperiam soluta vitae suscipit.&quot;,
-                    &quot;is_correct&quot;: 0,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 10,
-                    &quot;question_id&quot;: 3,
-                    &quot;answer_text&quot;: &quot;Fuga voluptatem nihil impedit eos et voluptatem.&quot;,
-                    &quot;is_correct&quot;: 0,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 11,
-                    &quot;question_id&quot;: 3,
-                    &quot;answer_text&quot;: &quot;Nostrum quia aut soluta assumenda dicta.&quot;,
-                    &quot;is_correct&quot;: 0,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 12,
-                    &quot;question_id&quot;: 3,
-                    &quot;answer_text&quot;: &quot;Quibusdam quia facilis atque.&quot;,
-                    &quot;is_correct&quot;: 1,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                }
-            ]
-        },
-        {
-            &quot;id&quot;: 4,
-            &quot;quiz_id&quot;: 1,
-            &quot;question_text&quot;: &quot;Quia dolorem quae fugit veniam ipsam quod quos qui nulla voluptas sit repellat.?&quot;,
-            &quot;question_type&quot;: &quot;single choice&quot;,
-            &quot;difficulty&quot;: &quot;medium&quot;,
-            &quot;img_url&quot;: null,
-            &quot;time_to_answer&quot;: 45,
-            &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-            &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-            &quot;answers&quot;: [
-                {
-                    &quot;id&quot;: 13,
-                    &quot;question_id&quot;: 4,
-                    &quot;answer_text&quot;: &quot;Repellendus eum consequuntur esse dignissimos.&quot;,
-                    &quot;is_correct&quot;: 0,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 14,
-                    &quot;question_id&quot;: 4,
-                    &quot;answer_text&quot;: &quot;Quo ratione aut nihil est.&quot;,
-                    &quot;is_correct&quot;: 0,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 15,
-                    &quot;question_id&quot;: 4,
-                    &quot;answer_text&quot;: &quot;Vel inventore omnis perferendis.&quot;,
-                    &quot;is_correct&quot;: 0,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 16,
-                    &quot;question_id&quot;: 4,
-                    &quot;answer_text&quot;: &quot;Expedita fuga est ex.&quot;,
-                    &quot;is_correct&quot;: 1,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                }
-            ]
-        },
-        {
-            &quot;id&quot;: 5,
-            &quot;quiz_id&quot;: 1,
-            &quot;question_text&quot;: &quot;Et suscipit dolorem modi aut rerum sequi quasi.?&quot;,
-            &quot;question_type&quot;: &quot;multiple choice&quot;,
-            &quot;difficulty&quot;: &quot;easy&quot;,
-            &quot;img_url&quot;: null,
-            &quot;time_to_answer&quot;: 45,
-            &quot;created_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-            &quot;updated_at&quot;: &quot;2025-03-03T15:14:52.000000Z&quot;,
-            &quot;answers&quot;: [
-                {
-                    &quot;id&quot;: 17,
-                    &quot;question_id&quot;: 5,
-                    &quot;answer_text&quot;: &quot;Autem ut nisi qui nihil voluptatem accusamus.&quot;,
-                    &quot;is_correct&quot;: 0,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 18,
-                    &quot;question_id&quot;: 5,
-                    &quot;answer_text&quot;: &quot;Sequi ipsa saepe sunt aut.&quot;,
-                    &quot;is_correct&quot;: 0,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 19,
-                    &quot;question_id&quot;: 5,
-                    &quot;answer_text&quot;: &quot;Ut ut amet velit rem.&quot;,
-                    &quot;is_correct&quot;: 0,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                },
-                {
-                    &quot;id&quot;: 20,
-                    &quot;question_id&quot;: 5,
-                    &quot;answer_text&quot;: &quot;Dolorem reiciendis consequatur enim cum et quisquam voluptatem.&quot;,
-                    &quot;is_correct&quot;: 1,
-                    &quot;created_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;,
-                    &quot;updated_at&quot;: &quot;2025-03-03T15:14:53.000000Z&quot;
-                }
-            ]
-        }
-    ]
-}</code>
- </pre>
-    </span>
-<span id="execution-results-GETapi-quizzes--id-" hidden>
+<span id="example-responses-POSTapi-join-room">
+</span>
+<span id="execution-results-POSTapi-join-room" hidden>
     <blockquote>Received response<span
-                id="execution-response-status-GETapi-quizzes--id-"></span>:
+                id="execution-response-status-POSTapi-join-room"></span>:
     </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-quizzes--id-"
+    <pre class="json"><code id="execution-response-content-POSTapi-join-room"
       data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
 </span>
-<span id="execution-error-GETapi-quizzes--id-" hidden>
+<span id="execution-error-POSTapi-join-room" hidden>
     <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-quizzes--id-">
+    <pre><code id="execution-error-message-POSTapi-join-room">
 
 Tip: Check that you&#039;re properly connected to the network.
 If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
 You can check the Dev Tools console for debugging information.</code></pre>
 </span>
-<form id="form-GETapi-quizzes--id-" data-method="GET"
-      data-path="api/quizzes/{id}"
+<form id="form-POSTapi-join-room" data-method="POST"
+      data-path="api/join-room"
       data-authed="0"
       data-hasfiles="0"
       data-isarraybody="0"
       autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-quizzes--id-', this);">
+      onsubmit="event.preventDefault(); executeTryOut('POSTapi-join-room', this);">
     <h3>
         Request&nbsp;&nbsp;&nbsp;
                     <button type="button"
                     style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-quizzes--id-"
-                    onclick="tryItOut('GETapi-quizzes--id-');">Try it out ⚡
+                    id="btn-tryout-POSTapi-join-room"
+                    onclick="tryItOut('POSTapi-join-room');">Try it out ⚡
             </button>
             <button type="button"
                     style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-quizzes--id-"
-                    onclick="cancelTryOut('GETapi-quizzes--id-');" hidden>Cancel 🛑
+                    id="btn-canceltryout-POSTapi-join-room"
+                    onclick="cancelTryOut('POSTapi-join-room');" hidden>Cancel 🛑
             </button>&nbsp;&nbsp;
             <button type="submit"
                     style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-quizzes--id-"
+                    id="btn-executetryout-POSTapi-join-room"
                     data-initial-text="Send Request 💥"
                     data-loading-text="⏱ Sending..."
                     hidden>Send Request 💥
             </button>
             </h3>
             <p>
-            <small class="badge badge-green">GET</small>
-            <b><code>api/quizzes/{id}</code></b>
+            <small class="badge badge-black">POST</small>
+            <b><code>api/join-room</code></b>
         </p>
                 <h4 class="fancy-heading-panel"><b>Headers</b></h4>
                                 <div style="padding-left: 28px; clear: unset;">
@@ -1140,7 +761,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-quizzes--id-"
+                              name="Content-Type"                data-endpoint="POSTapi-join-room"
                value="application/json"
                data-component="header">
     <br>
@@ -1151,25 +772,25 @@ You can check the Dev Tools console for debugging information.</code></pre>
 &nbsp;
  &nbsp;
                 <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-quizzes--id-"
+                              name="Accept"                data-endpoint="POSTapi-join-room"
                value="application/json"
                data-component="header">
     <br>
 <p>Example: <code>application/json</code></p>
             </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
+                                <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
+        <div style=" padding-left: 28px;  clear: unset;">
+            <b style="line-height: 2;"><code>room_code</code></b>&nbsp;&nbsp;
+<small>string</small>&nbsp;
  &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="id"                data-endpoint="GETapi-quizzes--id-"
-               value="1"
-               data-component="url">
+                <input type="text" style="display: none"
+                              name="room_code"                data-endpoint="POSTapi-join-room"
+               value="bngzmi"
+               data-component="body">
     <br>
-<p>The ID of the quiz. Example: <code>1</code></p>
-            </div>
-                    </form>
+<p>Must be 6 characters. Example: <code>bngzmi</code></p>
+        </div>
+        </form>
 
                     <h2 id="endpoints-POSTapi-logout">POST api/logout</h2>
 
@@ -1301,18 +922,18 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"category\": \"v\",
     \"img_url\": \"http:\\/\\/www.dach.com\\/mollitia-modi-deserunt-aut-ab-provident-perspiciatis-quo.html\",
     \"show_correct_answer\": true,
-    \"is_public\": false,
+    \"is_public\": true,
     \"questions\": [
         {
             \"question_text\": \"architecto\",
-            \"question_type\": \"multiple choice\",
+            \"question_type\": \"single choice\",
             \"difficulty\": \"architecto\",
             \"img_url\": \"http:\\/\\/www.bailey.biz\\/quos-velit-et-fugiat-sunt-nihil-accusantium-harum.html\",
             \"time_to_answer\": 16,
             \"answer_options\": [
                 {
                     \"answer_text\": \"architecto\",
-                    \"is_correct\": true
+                    \"is_correct\": false
                 }
             ]
         }
@@ -1337,18 +958,18 @@ let body = {
     "category": "v",
     "img_url": "http:\/\/www.dach.com\/mollitia-modi-deserunt-aut-ab-provident-perspiciatis-quo.html",
     "show_correct_answer": true,
-    "is_public": false,
+    "is_public": true,
     "questions": [
         {
             "question_text": "architecto",
-            "question_type": "multiple choice",
+            "question_type": "single choice",
             "difficulty": "architecto",
             "img_url": "http:\/\/www.bailey.biz\/quos-velit-et-fugiat-sunt-nihil-accusantium-harum.html",
             "time_to_answer": 16,
             "answer_options": [
                 {
                     "answer_text": "architecto",
-                    "is_correct": true
+                    "is_correct": false
                 }
             ]
         }
@@ -1519,7 +1140,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>false</code></p>
+<p>Example: <code>true</code></p>
         </div>
                 <div style=" padding-left: 28px;  clear: unset;">
         <details>
@@ -1547,10 +1168,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
 <i>optional</i> &nbsp;
                 <input type="text" style="display: none"
                               name="questions.0.question_type"                data-endpoint="POSTapi-quizzes"
-               value="multiple choice"
+               value="single choice"
                data-component="body">
     <br>
-<p>This field is required when <code>questions</code> is present. Example: <code>multiple choice</code></p>
+<p>This field is required when <code>questions</code> is present. Example: <code>single choice</code></p>
 Must be one of:
 <ul style="list-style-type: square;"><li><code>single choice</code></li> <li><code>multiple choice</code></li></ul>
                     </div>
@@ -1626,7 +1247,7 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>true</code></p>
+<p>Example: <code>false</code></p>
                     </div>
                                     </details>
         </div>
@@ -1647,7 +1268,7 @@ Must be one of:
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/quizzes/1" \
+    "http://localhost/api/quizzes/architecto" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -1663,7 +1284,7 @@ Must be one of:
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/quizzes/1"
+    "http://localhost/api/quizzes/architecto"
 );
 
 const headers = {
@@ -1766,14 +1387,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
+<small>string</small>&nbsp;
  &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="id"                data-endpoint="PUTapi-quizzes--id-"
-               value="1"
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="PUTapi-quizzes--id-"
+               value="architecto"
                data-component="url">
     <br>
-<p>The ID of the quiz. Example: <code>1</code></p>
+<p>The ID of the quiz. Example: <code>architecto</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -1877,14 +1498,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/quizzes/1" \
+    "http://localhost/api/quizzes/architecto" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/quizzes/1"
+    "http://localhost/api/quizzes/architecto"
 );
 
 const headers = {
@@ -1973,141 +1594,16 @@ You can check the Dev Tools console for debugging information.</code></pre>
                         <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
                     <div style="padding-left: 28px; clear: unset;">
                 <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
+<small>string</small>&nbsp;
  &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="id"                data-endpoint="DELETEapi-quizzes--id-"
-               value="1"
+                <input type="text" style="display: none"
+                              name="id"                data-endpoint="DELETEapi-quizzes--id-"
+               value="architecto"
                data-component="url">
     <br>
-<p>The ID of the quiz. Example: <code>1</code></p>
+<p>The ID of the quiz. Example: <code>architecto</code></p>
             </div>
                     </form>
-
-                    <h2 id="endpoints-GETapi-questions">Display a listing of the questions.</h2>
-
-<p>
-</p>
-
-
-
-<span id="example-requests-GETapi-questions">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/questions" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/questions"
-);
-
-const headers = {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-fetch(url, {
-    method: "GET",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-GETapi-questions">
-            <blockquote>
-            <p>Example response (401):</p>
-        </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: http://localhost:5173
-access-control-allow-credentials: true
- </code></pre></details>         <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Unauthenticated.&quot;
-}</code>
- </pre>
-    </span>
-<span id="execution-results-GETapi-questions" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-GETapi-questions"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-questions"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-GETapi-questions" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-questions">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-GETapi-questions" data-method="GET"
-      data-path="api/questions"
-      data-authed="0"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-questions', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-questions"
-                    onclick="tryItOut('GETapi-questions');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-questions"
-                    onclick="cancelTryOut('GETapi-questions');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-questions"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-green">GET</small>
-            <b><code>api/questions</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-questions"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-questions"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        </form>
 
                     <h2 id="endpoints-POSTapi-questions">Store a newly created question in the database.</h2>
 
@@ -2135,7 +1631,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
     \"answer_options\": [
         {
             \"answer_text\": \"architecto\",
-            \"is_correct\": false
+            \"is_correct\": true
         }
     ]
 }"
@@ -2162,7 +1658,7 @@ let body = {
     "answer_options": [
         {
             "answer_text": "architecto",
-            "is_correct": false
+            "is_correct": true
         }
     ]
 };
@@ -2354,148 +1850,11 @@ Must be one of:
             <code>false</code>
         </label>
     <br>
-<p>Example: <code>false</code></p>
+<p>Example: <code>true</code></p>
                     </div>
                                     </details>
         </div>
         </form>
-
-                    <h2 id="endpoints-GETapi-questions--id-">Display the specified question.</h2>
-
-<p>
-</p>
-
-
-
-<span id="example-requests-GETapi-questions--id-">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/questions/1" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/questions/1"
-);
-
-const headers = {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-fetch(url, {
-    method: "GET",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-GETapi-questions--id-">
-            <blockquote>
-            <p>Example response (401):</p>
-        </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: http://localhost:5173
-access-control-allow-credentials: true
- </code></pre></details>         <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Unauthenticated.&quot;
-}</code>
- </pre>
-    </span>
-<span id="execution-results-GETapi-questions--id-" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-GETapi-questions--id-"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-questions--id-"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-GETapi-questions--id-" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-questions--id-">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-GETapi-questions--id-" data-method="GET"
-      data-path="api/questions/{id}"
-      data-authed="0"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-questions--id-', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-questions--id-"
-                    onclick="tryItOut('GETapi-questions--id-');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-questions--id-"
-                    onclick="cancelTryOut('GETapi-questions--id-');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-questions--id-"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-green">GET</small>
-            <b><code>api/questions/{id}</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-questions--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-questions--id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>id</code></b>&nbsp;&nbsp;
-<small>integer</small>&nbsp;
- &nbsp;
-                <input type="number" style="display: none"
-               step="any"               name="id"                data-endpoint="GETapi-questions--id-"
-               value="1"
-               data-component="url">
-    <br>
-<p>The ID of the question. Example: <code>1</code></p>
-            </div>
-                    </form>
 
                     <h2 id="endpoints-PUTapi-questions--id-">Update the specified question in the database.</h2>
 
@@ -2510,7 +1869,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/questions/1" \
+    "http://localhost/api/questions/16" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
@@ -2532,7 +1891,7 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/questions/1"
+    "http://localhost/api/questions/16"
 );
 
 const headers = {
@@ -2645,10 +2004,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="PUTapi-questions--id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the question. Example: <code>1</code></p>
+<p>The ID of the question. Example: <code>16</code></p>
             </div>
                             <h4 class="fancy-heading-panel"><b>Body Parameters</b></h4>
         <div style=" padding-left: 28px;  clear: unset;">
@@ -2788,14 +2147,14 @@ Must be one of:
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request DELETE \
-    "http://localhost/api/questions/1" \
+    "http://localhost/api/questions/16" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/questions/1"
+    "http://localhost/api/questions/16"
 );
 
 const headers = {
@@ -2888,10 +2247,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="DELETEapi-questions--id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the question. Example: <code>1</code></p>
+<p>The ID of the question. Example: <code>16</code></p>
             </div>
                     </form>
 
@@ -3218,14 +2577,14 @@ You can check the Dev Tools console for debugging information.</code></pre>
 
 <div class="bash-example">
     <pre><code class="language-bash">curl --request PUT \
-    "http://localhost/api/friendships/1" \
+    "http://localhost/api/friendships/16" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre></div>
 
 
 <div class="javascript-example">
     <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/friendships/1"
+    "http://localhost/api/friendships/16"
 );
 
 const headers = {
@@ -3322,272 +2681,10 @@ You can check the Dev Tools console for debugging information.</code></pre>
  &nbsp;
                 <input type="number" style="display: none"
                step="any"               name="id"                data-endpoint="PUTapi-friendships--id-"
-               value="1"
+               value="16"
                data-component="url">
     <br>
-<p>The ID of the friendship. Example: <code>1</code></p>
-            </div>
-                    </form>
-
-                    <h2 id="endpoints-GETapi-leaderboard">GET api/leaderboard</h2>
-
-<p>
-</p>
-
-
-
-<span id="example-requests-GETapi-leaderboard">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/leaderboard" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/leaderboard"
-);
-
-const headers = {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-fetch(url, {
-    method: "GET",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-GETapi-leaderboard">
-            <blockquote>
-            <p>Example response (401):</p>
-        </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: http://localhost:5173
-access-control-allow-credentials: true
- </code></pre></details>         <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Unauthenticated.&quot;
-}</code>
- </pre>
-    </span>
-<span id="execution-results-GETapi-leaderboard" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-GETapi-leaderboard"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-leaderboard"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-GETapi-leaderboard" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-leaderboard">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-GETapi-leaderboard" data-method="GET"
-      data-path="api/leaderboard"
-      data-authed="0"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-leaderboard', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-leaderboard"
-                    onclick="tryItOut('GETapi-leaderboard');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-leaderboard"
-                    onclick="cancelTryOut('GETapi-leaderboard');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-leaderboard"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-green">GET</small>
-            <b><code>api/leaderboard</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-leaderboard"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-leaderboard"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        </form>
-
-                    <h2 id="endpoints-GETapi-user-rank--user_id-">GET api/user-rank/{user_id}</h2>
-
-<p>
-</p>
-
-
-
-<span id="example-requests-GETapi-user-rank--user_id-">
-<blockquote>Example request:</blockquote>
-
-
-<div class="bash-example">
-    <pre><code class="language-bash">curl --request GET \
-    --get "http://localhost/api/user-rank/architecto" \
-    --header "Content-Type: application/json" \
-    --header "Accept: application/json"</code></pre></div>
-
-
-<div class="javascript-example">
-    <pre><code class="language-javascript">const url = new URL(
-    "http://localhost/api/user-rank/architecto"
-);
-
-const headers = {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-};
-
-fetch(url, {
-    method: "GET",
-    headers,
-}).then(response =&gt; response.json());</code></pre></div>
-
-</span>
-
-<span id="example-responses-GETapi-user-rank--user_id-">
-            <blockquote>
-            <p>Example response (401):</p>
-        </blockquote>
-                <details class="annotation">
-            <summary style="cursor: pointer;">
-                <small onclick="textContent = parentElement.parentElement.open ? 'Show headers' : 'Hide headers'">Show headers</small>
-            </summary>
-            <pre><code class="language-http">cache-control: no-cache, private
-content-type: application/json
-access-control-allow-origin: http://localhost:5173
-access-control-allow-credentials: true
- </code></pre></details>         <pre>
-
-<code class="language-json" style="max-height: 300px;">{
-    &quot;message&quot;: &quot;Unauthenticated.&quot;
-}</code>
- </pre>
-    </span>
-<span id="execution-results-GETapi-user-rank--user_id-" hidden>
-    <blockquote>Received response<span
-                id="execution-response-status-GETapi-user-rank--user_id-"></span>:
-    </blockquote>
-    <pre class="json"><code id="execution-response-content-GETapi-user-rank--user_id-"
-      data-empty-response-text="<Empty response>" style="max-height: 400px;"></code></pre>
-</span>
-<span id="execution-error-GETapi-user-rank--user_id-" hidden>
-    <blockquote>Request failed with error:</blockquote>
-    <pre><code id="execution-error-message-GETapi-user-rank--user_id-">
-
-Tip: Check that you&#039;re properly connected to the network.
-If you&#039;re a maintainer of ths API, verify that your API is running and you&#039;ve enabled CORS.
-You can check the Dev Tools console for debugging information.</code></pre>
-</span>
-<form id="form-GETapi-user-rank--user_id-" data-method="GET"
-      data-path="api/user-rank/{user_id}"
-      data-authed="0"
-      data-hasfiles="0"
-      data-isarraybody="0"
-      autocomplete="off"
-      onsubmit="event.preventDefault(); executeTryOut('GETapi-user-rank--user_id-', this);">
-    <h3>
-        Request&nbsp;&nbsp;&nbsp;
-                    <button type="button"
-                    style="background-color: #8fbcd4; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-tryout-GETapi-user-rank--user_id-"
-                    onclick="tryItOut('GETapi-user-rank--user_id-');">Try it out ⚡
-            </button>
-            <button type="button"
-                    style="background-color: #c97a7e; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-canceltryout-GETapi-user-rank--user_id-"
-                    onclick="cancelTryOut('GETapi-user-rank--user_id-');" hidden>Cancel 🛑
-            </button>&nbsp;&nbsp;
-            <button type="submit"
-                    style="background-color: #6ac174; padding: 5px 10px; border-radius: 5px; border-width: thin;"
-                    id="btn-executetryout-GETapi-user-rank--user_id-"
-                    data-initial-text="Send Request 💥"
-                    data-loading-text="⏱ Sending..."
-                    hidden>Send Request 💥
-            </button>
-            </h3>
-            <p>
-            <small class="badge badge-green">GET</small>
-            <b><code>api/user-rank/{user_id}</code></b>
-        </p>
-                <h4 class="fancy-heading-panel"><b>Headers</b></h4>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Content-Type</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Content-Type"                data-endpoint="GETapi-user-rank--user_id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                                <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>Accept</code></b>&nbsp;&nbsp;
-&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="Accept"                data-endpoint="GETapi-user-rank--user_id-"
-               value="application/json"
-               data-component="header">
-    <br>
-<p>Example: <code>application/json</code></p>
-            </div>
-                        <h4 class="fancy-heading-panel"><b>URL Parameters</b></h4>
-                    <div style="padding-left: 28px; clear: unset;">
-                <b style="line-height: 2;"><code>user_id</code></b>&nbsp;&nbsp;
-<small>string</small>&nbsp;
- &nbsp;
-                <input type="text" style="display: none"
-                              name="user_id"                data-endpoint="GETapi-user-rank--user_id-"
-               value="architecto"
-               data-component="url">
-    <br>
-<p>The ID of the user. Example: <code>architecto</code></p>
+<p>The ID of the friendship. Example: <code>16</code></p>
             </div>
                     </form>
 

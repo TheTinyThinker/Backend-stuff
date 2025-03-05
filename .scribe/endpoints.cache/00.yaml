@@ -150,14 +150,14 @@ endpoints:
     custom: []
   -
     httpMethods:
-      - GET
-    uri: api/quizzes
+      - POST
+    uri: api/create-room
     metadata:
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Display a listing of the resource.'
+      title: ''
       description: ''
       authenticated: false
       custom: []
@@ -171,17 +171,7 @@ endpoints:
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
-    responses:
-      -
-        status: 200
-        content: '[{"id":1,"user_id":3,"title":"Dolores temporibus quia quam.","description":"Expedita natus laudantium in ut ut voluptatem eaque. Suscipit animi impedit et nihil. Doloremque ab et facilis occaecati illum. Incidunt omnis molestiae voluptas distinctio veniam dicta nostrum.","category":"History","img_url":"https:\/\/picsum.photos\/id\/53\/200\/200","show_correct_answer":true,"is_public":true,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z","created_by":"Kelvin Nienow DVM","user":{"id":3,"name":"Kelvin Nienow DVM"}},{"id":2,"user_id":8,"title":"Necessitatibus aut at distinctio.","description":"Necessitatibus itaque deserunt quis in. Veritatis et laboriosam magnam et magnam dolor amet. Odit sit quibusdam totam iure. Officia consequatur non debitis quia.","category":"General Knowledge","img_url":"https:\/\/picsum.photos\/id\/46\/200\/200","show_correct_answer":true,"is_public":true,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z","created_by":"Dr. Clint Kub","user":{"id":8,"name":"Dr. Clint Kub"}},{"id":3,"user_id":10,"title":"Repellendus tenetur saepe sint et.","description":"Aspernatur excepturi eum ipsum molestiae quod. Saepe non esse sed rem aspernatur vel repudiandae. Qui aut velit voluptas.","category":"Sports","img_url":"https:\/\/picsum.photos\/id\/84\/200\/200","show_correct_answer":false,"is_public":true,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z","created_by":"Vance Waelchi","user":{"id":10,"name":"Vance Waelchi"}},{"id":4,"user_id":10,"title":"Voluptates vero et minima.","description":"Molestiae quam accusamus veniam earum et ut dolore. Quia modi consequatur accusamus voluptatem non. Voluptate maxime id accusamus rem ut esse ducimus dolor. At et non asperiores pariatur exercitationem. Architecto maiores odit adipisci voluptates temporibus aspernatur dolorem incidunt.","category":"Technology","img_url":"https:\/\/picsum.photos\/id\/12\/200\/200","show_correct_answer":true,"is_public":true,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z","created_by":"Vance Waelchi","user":{"id":10,"name":"Vance Waelchi"}},{"id":5,"user_id":1,"title":"Nesciunt eos dolor aut.","description":"Repellat et in doloremque qui sit recusandae. Consequatur odio placeat id impedit esse quo. Doloremque quisquam amet voluptatem id consequatur dolorem vel.","category":"Geography","img_url":"https:\/\/picsum.photos\/id\/22\/200\/200","show_correct_answer":false,"is_public":true,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z","created_by":"Gerardo Ebert","user":{"id":1,"name":"Gerardo Ebert"}},{"id":6,"user_id":16,"title":"eeewew","description":"ewewewewew","category":null,"img_url":"nourlyet","show_correct_answer":true,"is_public":true,"created_at":"2025-03-03T15:16:12.000000Z","updated_at":"2025-03-03T15:16:12.000000Z","created_by":"test1","user":{"id":16,"name":"test1"}}]'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: 'http://localhost:5173'
-          access-control-allow-credentials: 'true'
-        description: null
-        custom: []
+    responses: []
     responseFields: []
     auth: []
     controller: null
@@ -190,49 +180,39 @@ endpoints:
     custom: []
   -
     httpMethods:
-      - GET
-    uri: 'api/quizzes/{id}'
+      - POST
+    uri: api/join-room
     metadata:
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Display the specified resource.'
+      title: 'Join a room using a code.'
       description: ''
       authenticated: false
       custom: []
     headers:
       Content-Type: application/json
       Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the quiz.'
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      room_code:
+        name: room_code
+        description: 'Must be 6 characters.'
         required: true
-        example: 1
-        type: integer
+        example: bngzmi
+        type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
+    cleanBodyParameters:
+      room_code: bngzmi
     fileParameters: []
-    responses:
-      -
-        status: 200
-        content: '{"id":1,"user_id":3,"title":"Dolores temporibus quia quam.","description":"Expedita natus laudantium in ut ut voluptatem eaque. Suscipit animi impedit et nihil. Doloremque ab et facilis occaecati illum. Incidunt omnis molestiae voluptas distinctio veniam dicta nostrum.","category":"History","img_url":"https:\/\/picsum.photos\/id\/53\/200\/200","show_correct_answer":true,"is_public":true,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z","created_by":"Kelvin Nienow DVM","user":{"id":3,"name":"Kelvin Nienow DVM"},"questions":[{"id":1,"quiz_id":1,"question_text":"Praesentium nisi fugiat deserunt consequuntur sed nisi culpa.?","question_type":"multiple choice","difficulty":"medium","img_url":"https:\/\/picsum.photos\/id\/116\/200\/200","time_to_answer":15,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z","answers":[{"id":1,"question_id":1,"answer_text":"Impedit voluptatem illum rerum consequatur illo nesciunt.","is_correct":0,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z"},{"id":2,"question_id":1,"answer_text":"Ea est est ut.","is_correct":0,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z"},{"id":3,"question_id":1,"answer_text":"Nostrum vitae rerum voluptate sed eos.","is_correct":1,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z"},{"id":4,"question_id":1,"answer_text":"Autem adipisci rerum perspiciatis.","is_correct":1,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z"}]},{"id":2,"quiz_id":1,"question_text":"Est quaerat voluptatibus sit voluptate et voluptas.?","question_type":"multiple choice","difficulty":"hard","img_url":null,"time_to_answer":30,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z","answers":[{"id":5,"question_id":2,"answer_text":"Qui fugit asperiores est alias.","is_correct":0,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"},{"id":6,"question_id":2,"answer_text":"Molestiae doloremque nemo sed ea odio iusto.","is_correct":0,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"},{"id":7,"question_id":2,"answer_text":"Non sunt repellendus rerum.","is_correct":1,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"},{"id":8,"question_id":2,"answer_text":"Beatae expedita dolor esse unde consequatur.","is_correct":1,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"}]},{"id":3,"quiz_id":1,"question_text":"Qui molestiae est voluptatem qui enim voluptatum a incidunt est aut doloribus magnam.?","question_type":"multiple choice","difficulty":"hard","img_url":null,"time_to_answer":45,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z","answers":[{"id":9,"question_id":3,"answer_text":"Aperiam soluta vitae suscipit.","is_correct":0,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"},{"id":10,"question_id":3,"answer_text":"Fuga voluptatem nihil impedit eos et voluptatem.","is_correct":0,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"},{"id":11,"question_id":3,"answer_text":"Nostrum quia aut soluta assumenda dicta.","is_correct":0,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"},{"id":12,"question_id":3,"answer_text":"Quibusdam quia facilis atque.","is_correct":1,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"}]},{"id":4,"quiz_id":1,"question_text":"Quia dolorem quae fugit veniam ipsam quod quos qui nulla voluptas sit repellat.?","question_type":"single choice","difficulty":"medium","img_url":null,"time_to_answer":45,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z","answers":[{"id":13,"question_id":4,"answer_text":"Repellendus eum consequuntur esse dignissimos.","is_correct":0,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"},{"id":14,"question_id":4,"answer_text":"Quo ratione aut nihil est.","is_correct":0,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"},{"id":15,"question_id":4,"answer_text":"Vel inventore omnis perferendis.","is_correct":0,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"},{"id":16,"question_id":4,"answer_text":"Expedita fuga est ex.","is_correct":1,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"}]},{"id":5,"quiz_id":1,"question_text":"Et suscipit dolorem modi aut rerum sequi quasi.?","question_type":"multiple choice","difficulty":"easy","img_url":null,"time_to_answer":45,"created_at":"2025-03-03T15:14:52.000000Z","updated_at":"2025-03-03T15:14:52.000000Z","answers":[{"id":17,"question_id":5,"answer_text":"Autem ut nisi qui nihil voluptatem accusamus.","is_correct":0,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"},{"id":18,"question_id":5,"answer_text":"Sequi ipsa saepe sunt aut.","is_correct":0,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"},{"id":19,"question_id":5,"answer_text":"Ut ut amet velit rem.","is_correct":0,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"},{"id":20,"question_id":5,"answer_text":"Dolorem reiciendis consequatur enim cum et quisquam voluptatem.","is_correct":1,"created_at":"2025-03-03T15:14:53.000000Z","updated_at":"2025-03-03T15:14:53.000000Z"}]}]}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: 'http://localhost:5173'
-          access-control-allow-credentials: 'true'
-        description: null
-        custom: []
+    responses: []
     responseFields: []
     auth: []
     controller: null
@@ -344,7 +324,7 @@ endpoints:
         name: is_public
         description: ''
         required: false
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -374,7 +354,7 @@ endpoints:
         name: 'questions[].question_type'
         description: 'This field is required when <code>questions</code> is present.'
         required: false
-        example: 'multiple choice'
+        example: 'single choice'
         type: string
         enumValues:
           - 'single choice'
@@ -436,7 +416,7 @@ endpoints:
         name: 'questions[].answer_options[].is_correct'
         description: ''
         required: true
-        example: true
+        example: false
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -448,18 +428,18 @@ endpoints:
       category: v
       img_url: 'http://www.dach.com/mollitia-modi-deserunt-aut-ab-provident-perspiciatis-quo.html'
       show_correct_answer: true
-      is_public: false
+      is_public: true
       questions:
         -
           question_text: architecto
-          question_type: 'multiple choice'
+          question_type: 'single choice'
           difficulty: architecto
           img_url: 'http://www.bailey.biz/quos-velit-et-fugiat-sunt-nihil-accusantium-harum.html'
           time_to_answer: 16
           answer_options:
             -
               answer_text: architecto
-              is_correct: true
+              is_correct: false
     fileParameters: []
     responses: []
     responseFields: []
@@ -490,14 +470,14 @@ endpoints:
         name: id
         description: 'The ID of the quiz.'
         required: true
-        example: 1
-        type: integer
+        example: architecto
+        type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 1
+      id: architecto
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -597,60 +577,20 @@ endpoints:
         name: id
         description: 'The ID of the quiz.'
         required: true
-        example: 1
-        type: integer
+        example: architecto
+        type: string
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 1
+      id: architecto
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/questions
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Display a listing of the questions.'
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: 'http://localhost:5173'
-          access-control-allow-credentials: 'true'
-        description: null
-        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -765,7 +705,7 @@ endpoints:
         name: 'answer_options[].is_correct'
         description: ''
         required: true
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -781,60 +721,9 @@ endpoints:
       answer_options:
         -
           answer_text: architecto
-          is_correct: false
+          is_correct: true
     fileParameters: []
     responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/questions/{id}'
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Display the specified question.'
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the question.'
-        required: true
-        example: 1
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: 1
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: 'http://localhost:5173'
-          access-control-allow-credentials: 'true'
-        description: null
-        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -863,14 +752,14 @@ endpoints:
         name: id
         description: 'The ID of the question.'
         required: true
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 1
+      id: 16
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -1017,14 +906,14 @@ endpoints:
         name: id
         description: 'The ID of the question.'
         required: true
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 1
+      id: 16
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -1185,111 +1074,20 @@ endpoints:
         name: id
         description: 'The ID of the friendship.'
         required: true
-        example: 1
+        example: 16
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 1
+      id: 16
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: api/leaderboard
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: 'http://localhost:5173'
-          access-control-allow-credentials: 'true'
-        description: null
-        custom: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - GET
-    uri: 'api/user-rank/{user_id}'
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      user_id:
-        name: user_id
-        description: 'The ID of the user.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      user_id: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses:
-      -
-        status: 401
-        content: '{"message":"Unauthenticated."}'
-        headers:
-          cache-control: 'no-cache, private'
-          content-type: application/json
-          access-control-allow-origin: 'http://localhost:5173'
-          access-control-allow-credentials: 'true'
-        description: null
-        custom: []
     responseFields: []
     auth: []
     controller: null
