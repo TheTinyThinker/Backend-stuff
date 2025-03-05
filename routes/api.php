@@ -17,6 +17,8 @@ Route::post('send-test-broadcast', [RoomController::class, 'sendTestBroadcast'])
 // Public routes
 Route::post('register', [AuthController::class, 'register']);
 Route::post('login', [AuthController::class, 'login']);
+Route::post('/create-room', [RoomController::class, 'createRoom']);
+Route::post('/join-room', [RoomController::class, 'joinRoom']);
 
 // Public quiz routes - explicitly define these outside auth middleware
 Route::get('quizzes', [QuizController::class, 'index']);
