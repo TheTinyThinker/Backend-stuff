@@ -66,6 +66,7 @@ class QuestionController extends Controller
                 $answer = new Answer([
                     'answer_text' => $option['answer_text'],
                     'is_correct' => $option['is_correct'],
+                    'user_id' => Auth::id(),
                 ]);
                 $question->answers()->save($answer);
             }
@@ -144,12 +145,14 @@ class QuestionController extends Controller
                             $answer->update([
                                 'answer_text' => $option['answer_text'],
                                 'is_correct' => $option['is_correct'],
+                                'user_id' => Auth::id(),
                             ]);
                         }
                     } else {
                         $answer = new Answer([
                             'answer_text' => $option['answer_text'],
                             'is_correct' => $option['is_correct'],
+                            'user_id' => Auth::id(),
                         ]);
                         $question->answers()->save($answer);
                     }

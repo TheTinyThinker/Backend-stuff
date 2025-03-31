@@ -10,7 +10,7 @@
     ],
     "info": {
         "name": "Laravel API Documentation",
-        "_postman_id": "5bd5802f-3ee4-41d4-8aa1-c8285b0ba7d3",
+        "_postman_id": "e6918346-8435-4d2b-952e-1ba5789da1d0",
         "description": "",
         "schema": "https:\/\/schema.getpostman.com\/json\/collection\/v2.1.0\/collection.json"
     },
@@ -20,35 +20,7 @@
             "description": "",
             "item": [
                 {
-                    "name": "POST api\/send-test-broadcast",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/send-test-broadcast",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/send-test-broadcast"
-                        },
-                        "method": "POST",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": null,
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "POST api\/register",
+                    "name": "Register a new user with an optional profile picture",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -60,7 +32,7 @@
                         "header": [
                             {
                                 "key": "Content-Type",
-                                "value": "application\/json"
+                                "value": "multipart\/form-data"
                             },
                             {
                                 "key": "Accept",
@@ -68,8 +40,32 @@
                             }
                         ],
                         "body": {
-                            "mode": "raw",
-                            "raw": "{\"name\":\"b\",\"email\":\"zbailey@example.net\",\"password\":\"-0pBNvYgxw\"}"
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "name",
+                                    "value": "b",
+                                    "type": "text",
+                                    "description": "Must not be greater than 255 characters."
+                                },
+                                {
+                                    "key": "email",
+                                    "value": "zbailey@example.net",
+                                    "type": "text",
+                                    "description": "Must be a valid email address."
+                                },
+                                {
+                                    "key": "password",
+                                    "value": "-0pBNvYgxw",
+                                    "type": "text",
+                                    "description": "Must be at least 8 characters."
+                                },
+                                {
+                                    "key": "profile_picture",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
                         },
                         "description": "",
                         "auth": {
@@ -79,7 +75,7 @@
                     "response": []
                 },
                 {
-                    "name": "POST api\/login",
+                    "name": "Log in a user and return an authentication token",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -110,15 +106,23 @@
                     "response": []
                 },
                 {
-                    "name": "POST api\/create-room",
+                    "name": "Display the specified user profile with stats.",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/create-room",
+                            "path": "api\/users\/:id\/stats",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/create-room"
+                            "raw": "{{baseUrl}}\/api\/users\/:id\/stats",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "architecto",
+                                    "description": "The ID of the user."
+                                }
+                            ]
                         },
-                        "method": "POST",
+                        "method": "GET",
                         "header": [
                             {
                                 "key": "Content-Type",
@@ -135,16 +139,40 @@
                             "type": "noauth"
                         }
                     },
-                    "response": []
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "http:\/\/localhost:5173"
+                                },
+                                {
+                                    "key": "access-control-allow-credentials",
+                                    "value": "true"
+                                }
+                            ],
+                            "code": 404,
+                            "body": "{\n    \"message\": \"No query results for model [App\\\\Models\\\\User] architecto\"\n}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
-                    "name": "Join a room using a code.",
+                    "name": "POST api\/rooms\/create",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
-                            "path": "api\/join-room",
+                            "path": "api\/rooms\/create",
                             "query": [],
-                            "raw": "{{baseUrl}}\/api\/join-room"
+                            "raw": "{{baseUrl}}\/api\/rooms\/create"
                         },
                         "method": "POST",
                         "header": [
@@ -159,7 +187,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"room_code\":\"bngzmi\"}"
+                            "raw": "{\"userName\":\"b\",\"userId\":\"architecto\",\"quizId\":16}"
                         },
                         "description": "",
                         "auth": {
@@ -169,7 +197,431 @@
                     "response": []
                 },
                 {
-                    "name": "POST api\/logout",
+                    "name": "POST api\/rooms\/join",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/rooms\/join",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/rooms\/join"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"roomCode\":\"bngzmi\",\"userName\":\"y\",\"userId\":\"architecto\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "POST api\/rooms\/leave",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/rooms\/leave",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/rooms\/leave"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"roomCode\":\"bngzmi\",\"userId\":\"architecto\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "GET api\/rooms\/info",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/rooms\/info",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/rooms\/info"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "http:\/\/localhost:5173"
+                                },
+                                {
+                                    "key": "access-control-allow-credentials",
+                                    "value": "true"
+                                }
+                            ],
+                            "code": 404,
+                            "body": "{\"error\":\"Room not found\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "POST api\/rooms\/select-quiz",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/rooms\/select-quiz",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/rooms\/select-quiz"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"roomCode\":\"bngzmi\",\"quizId\":16}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "POST api\/game\/start",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/game\/start",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/game\/start"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"roomCode\":\"bngzmi\",\"userId\":\"architecto\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "POST api\/game\/submit-answer",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/game\/submit-answer",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/game\/submit-answer"
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"roomCode\":\"bngzmi\",\"userId\":\"architecto\",\"questionId\":16}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "GET api\/leaderboard\/results",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/leaderboard\/results",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/leaderboard\/results"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\"roomCode\":\"bngzmi\"}"
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "http:\/\/localhost:5173"
+                                },
+                                {
+                                    "key": "access-control-allow-credentials",
+                                    "value": "true"
+                                }
+                            ],
+                            "code": 404,
+                            "body": "{\"error\":\"Game not found\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Display a listing of the resource.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/quizzes",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/quizzes"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "http:\/\/localhost:5173"
+                                },
+                                {
+                                    "key": "access-control-allow-credentials",
+                                    "value": "true"
+                                }
+                            ],
+                            "code": 200,
+                            "body": "[{\"id\":1,\"user_id\":1,\"title\":\"dsdssd\",\"description\":\"dsdsdsds\",\"category\":\"\",\"img_url\":\"quiz_images\\\/A99yAyK0pXJRDLknIPKA1vqsj0ORBFpe3EeJna8l.jpg\",\"show_correct_answer\":true,\"is_public\":true,\"created_at\":\"2025-03-10T15:10:38.000000Z\",\"updated_at\":\"2025-03-10T15:10:38.000000Z\",\"created_by\":\"lew\",\"user\":{\"id\":1,\"name\":\"lew\"}},{\"id\":3,\"user_id\":11,\"title\":\"IMAGE ARRAY TEST\",\"description\":\"udsuidsiudsiu\",\"category\":\"\",\"img_url\":\"\",\"show_correct_answer\":true,\"is_public\":true,\"created_at\":\"2025-03-11T12:12:39.000000Z\",\"updated_at\":\"2025-03-11T12:12:39.000000Z\",\"created_by\":\"CRAB_GAMING\",\"user\":{\"id\":11,\"name\":\"CRAB_GAMING\"}},{\"id\":4,\"user_id\":11,\"title\":\"test5\",\"description\":\"rereerer\",\"category\":\"\",\"img_url\":\"quiz_images\\\/rXs7pBO1LQMFkhf9WKLsNNHmdbZZSXRM2dM9wtRC.jpg\",\"show_correct_answer\":true,\"is_public\":true,\"created_at\":\"2025-03-11T12:18:32.000000Z\",\"updated_at\":\"2025-03-11T12:18:32.000000Z\",\"created_by\":\"CRAB_GAMING\",\"user\":{\"id\":11,\"name\":\"CRAB_GAMING\"}},{\"id\":10,\"user_id\":11,\"title\":\"7675555556\",\"description\":\"767667\",\"category\":\"\",\"img_url\":\"\",\"show_correct_answer\":true,\"is_public\":true,\"created_at\":\"2025-03-11T12:47:41.000000Z\",\"updated_at\":\"2025-03-11T12:47:41.000000Z\",\"created_by\":\"CRAB_GAMING\",\"user\":{\"id\":11,\"name\":\"CRAB_GAMING\"}},{\"id\":13,\"user_id\":11,\"title\":\"asdfg\",\"description\":\"asdf\",\"category\":\"\",\"img_url\":\"quiz_images\\\/7rlbyTPFMRlHneCUq6AK5YC7CCidJnBgg16hYHXZ.jpg\",\"show_correct_answer\":true,\"is_public\":true,\"created_at\":\"2025-03-11T13:03:03.000000Z\",\"updated_at\":\"2025-03-11T13:03:03.000000Z\",\"created_by\":\"CRAB_GAMING\",\"user\":{\"id\":11,\"name\":\"CRAB_GAMING\"}},{\"id\":14,\"user_id\":11,\"title\":\"efrfrrfrf\",\"description\":\"rererere\",\"category\":\"\",\"img_url\":\"quiz_images\\\/PgRKSoj01lm2bmxk8s4GOr5jKcx5VCIF63IPN2HH.jpg\",\"show_correct_answer\":true,\"is_public\":true,\"created_at\":\"2025-03-11T13:18:32.000000Z\",\"updated_at\":\"2025-03-11T13:18:32.000000Z\",\"created_by\":\"CRAB_GAMING\",\"user\":{\"id\":11,\"name\":\"CRAB_GAMING\"}},{\"id\":15,\"user_id\":12,\"title\":\"jjj\",\"description\":\"jjj\",\"category\":\"\",\"img_url\":\"\",\"show_correct_answer\":true,\"is_public\":true,\"created_at\":\"2025-03-11T13:44:36.000000Z\",\"updated_at\":\"2025-03-11T13:44:36.000000Z\",\"created_by\":\"joining\",\"user\":{\"id\":12,\"name\":\"joining\"}},{\"id\":18,\"user_id\":16,\"title\":\"TEST HEREEEEEEE\",\"description\":\"uygsuayasguyyug\",\"category\":\"Sports\",\"img_url\":\"quiz_images\\\/iF31AdfTX4BqW9i0L7gWYkjQf9L1MVDVZZLulWDQ.jpg\",\"show_correct_answer\":true,\"is_public\":true,\"created_at\":\"2025-03-19T14:27:31.000000Z\",\"updated_at\":\"2025-03-19T14:27:31.000000Z\",\"created_by\":\"lew5\",\"user\":{\"id\":16,\"name\":\"lew5\"}},{\"id\":19,\"user_id\":20,\"title\":\"Showcase Quiz\",\"description\":\"showcase quiz\",\"category\":\"Sports\",\"img_url\":\"quiz_images\\\/WKaYYNlUp1IsbxmqyMwkzFfIVWp19849r8V9c0T2.jpg\",\"show_correct_answer\":true,\"is_public\":true,\"created_at\":\"2025-03-19T17:32:27.000000Z\",\"updated_at\":\"2025-03-19T17:32:27.000000Z\",\"created_by\":\"crabImageMan\",\"user\":{\"id\":20,\"name\":\"crabImageMan\"}},{\"id\":20,\"user_id\":16,\"title\":\"ggfgfgffg\",\"description\":\"gfgfgfg\",\"category\":\"History\",\"img_url\":\"https:\\\/\\\/images.pexels.com\\\/photos\\\/459124\\\/pexels-photo-459124.jpeg?auto=compress&cs=tinysrgb&h=650&w=940\",\"show_correct_answer\":true,\"is_public\":true,\"created_at\":\"2025-03-24T10:13:53.000000Z\",\"updated_at\":\"2025-03-24T10:13:53.000000Z\",\"created_by\":\"lew5\",\"user\":{\"id\":16,\"name\":\"lew5\"}},{\"id\":21,\"user_id\":16,\"title\":\"dsdsds\",\"description\":\"dsdsdsd\",\"category\":\"Geography\",\"img_url\":\"https:\\\/\\\/images.pexels.com\\\/photos\\\/53114\\\/horse-arabs-stallion-ride-53114.jpeg?auto=compress&cs=tinysrgb&h=650&w=940\",\"show_correct_answer\":true,\"is_public\":true,\"created_at\":\"2025-03-24T10:20:42.000000Z\",\"updated_at\":\"2025-03-24T10:20:42.000000Z\",\"created_by\":\"lew5\",\"user\":{\"id\":16,\"name\":\"lew5\"}},{\"id\":22,\"user_id\":16,\"title\":\"ONE FOR SHOWCASE\",\"description\":\"blah blah\",\"category\":\"Geography\",\"img_url\":\"https:\\\/\\\/images.pexels.com\\\/photos\\\/1098515\\\/pexels-photo-1098515.jpeg?auto=compress&cs=tinysrgb&h=650&w=940\",\"show_correct_answer\":true,\"is_public\":true,\"created_at\":\"2025-03-24T10:58:40.000000Z\",\"updated_at\":\"2025-03-24T10:58:40.000000Z\",\"created_by\":\"lew5\",\"user\":{\"id\":16,\"name\":\"lew5\"}},{\"id\":23,\"user_id\":16,\"title\":\"ddssd\",\"description\":\"sdsdsd\",\"category\":\"Geography\",\"img_url\":\"\",\"show_correct_answer\":true,\"is_public\":true,\"created_at\":\"2025-03-24T16:42:25.000000Z\",\"updated_at\":\"2025-03-24T16:42:25.000000Z\",\"created_by\":\"lew5\",\"user\":{\"id\":16,\"name\":\"lew5\"}}]",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Display the specified resource.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/quizzes\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/quizzes\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the quiz."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "http:\/\/localhost:5173"
+                                },
+                                {
+                                    "key": "access-control-allow-credentials",
+                                    "value": "true"
+                                }
+                            ],
+                            "code": 200,
+                            "body": "{\"id\":1,\"user_id\":1,\"title\":\"dsdssd\",\"description\":\"dsdsdsds\",\"category\":\"\",\"img_url\":\"quiz_images\\\/A99yAyK0pXJRDLknIPKA1vqsj0ORBFpe3EeJna8l.jpg\",\"show_correct_answer\":true,\"is_public\":true,\"created_at\":\"2025-03-10T15:10:38.000000Z\",\"updated_at\":\"2025-03-10T15:10:38.000000Z\",\"created_by\":\"lew\",\"user\":{\"id\":1,\"name\":\"lew\"},\"questions\":[]}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "Update the specified resource in storage.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/quizzes\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/quizzes\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the quiz."
+                                }
+                            ]
+                        },
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "multipart\/form-data"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "formdata",
+                            "formdata": [
+                                {
+                                    "key": "image",
+                                    "src": [],
+                                    "type": "file"
+                                },
+                                {
+                                    "key": "question_images[]",
+                                    "src": [],
+                                    "type": "file"
+                                }
+                            ]
+                        },
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": []
+                },
+                {
+                    "name": "Log out a user by revoking their authentication token",
                     "request": {
                         "url": {
                             "host": "{{baseUrl}}",
@@ -209,7 +661,7 @@
                         "header": [
                             {
                                 "key": "Content-Type",
-                                "value": "application\/json"
+                                "value": "multipart\/form-data"
                             },
                             {
                                 "key": "Accept",
@@ -217,47 +669,19 @@
                             }
                         ],
                         "body": {
-                            "mode": "raw",
-                            "raw": "{\"title\":\"b\",\"description\":\"Eius et animi quos velit et.\",\"category\":\"v\",\"img_url\":\"http:\\\/\\\/www.dach.com\\\/mollitia-modi-deserunt-aut-ab-provident-perspiciatis-quo.html\",\"show_correct_answer\":true,\"is_public\":true,\"questions\":[{\"question_text\":\"architecto\",\"question_type\":\"single choice\",\"difficulty\":\"architecto\",\"img_url\":\"http:\\\/\\\/www.bailey.biz\\\/quos-velit-et-fugiat-sunt-nihil-accusantium-harum.html\",\"time_to_answer\":16,\"answer_options\":[{\"answer_text\":\"architecto\",\"is_correct\":false}]}]}"
-                        },
-                        "description": "",
-                        "auth": {
-                            "type": "noauth"
-                        }
-                    },
-                    "response": []
-                },
-                {
-                    "name": "Update the specified resource in storage.",
-                    "request": {
-                        "url": {
-                            "host": "{{baseUrl}}",
-                            "path": "api\/quizzes\/:id",
-                            "query": [],
-                            "raw": "{{baseUrl}}\/api\/quizzes\/:id",
-                            "variable": [
+                            "mode": "formdata",
+                            "formdata": [
                                 {
-                                    "id": "id",
-                                    "key": "id",
-                                    "value": "architecto",
-                                    "description": "The ID of the quiz."
+                                    "key": "image",
+                                    "src": [],
+                                    "type": "file"
+                                },
+                                {
+                                    "key": "question_images[]",
+                                    "src": [],
+                                    "type": "file"
                                 }
                             ]
-                        },
-                        "method": "PUT",
-                        "header": [
-                            {
-                                "key": "Content-Type",
-                                "value": "application\/json"
-                            },
-                            {
-                                "key": "Accept",
-                                "value": "application\/json"
-                            }
-                        ],
-                        "body": {
-                            "mode": "raw",
-                            "raw": "{\"title\":\"b\",\"description\":\"Eius et animi quos velit et.\",\"category\":\"v\",\"img_url\":\"http:\\\/\\\/www.dach.com\\\/mollitia-modi-deserunt-aut-ab-provident-perspiciatis-quo.html\",\"show_correct_answer\":true,\"is_public\":false}"
                         },
                         "description": "",
                         "auth": {
@@ -278,7 +702,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "architecto",
+                                    "value": "1",
                                     "description": "The ID of the quiz."
                                 }
                             ]
@@ -301,6 +725,58 @@
                         }
                     },
                     "response": []
+                },
+                {
+                    "name": "Display a listing of the questions.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/questions",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/questions"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "http:\/\/localhost:5173"
+                                },
+                                {
+                                    "key": "access-control-allow-credentials",
+                                    "value": "true"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
                 },
                 {
                     "name": "Store a newly created question in the database.",
@@ -334,6 +810,66 @@
                     "response": []
                 },
                 {
+                    "name": "Display the specified question.",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/questions\/:id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/questions\/:id",
+                            "variable": [
+                                {
+                                    "id": "id",
+                                    "key": "id",
+                                    "value": "1",
+                                    "description": "The ID of the question."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "http:\/\/localhost:5173"
+                                },
+                                {
+                                    "key": "access-control-allow-credentials",
+                                    "value": "true"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
                     "name": "Update the specified question in the database.",
                     "request": {
                         "url": {
@@ -345,7 +881,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the question."
                                 }
                             ]
@@ -363,7 +899,7 @@
                         ],
                         "body": {
                             "mode": "raw",
-                            "raw": "{\"quiz_id\":\"architecto\",\"question_text\":\"architecto\",\"question_type\":\"single choice\",\"difficulty\":\"architecto\",\"img_url\":\"http:\\\/\\\/www.bailey.biz\\\/quos-velit-et-fugiat-sunt-nihil-accusantium-harum.html\",\"time_to_answer\":16,\"answer_options\":[{\"answer_text\":\"architecto\",\"is_correct\":false}]}"
+                            "raw": "{\"quiz_id\":\"architecto\",\"question_text\":\"architecto\",\"question_type\":\"single choice\",\"difficulty\":\"architecto\",\"img_url\":\"http:\\\/\\\/www.bailey.biz\\\/quos-velit-et-fugiat-sunt-nihil-accusantium-harum.html\",\"time_to_answer\":16,\"answer_options\":[{\"answer_text\":\"architecto\",\"is_correct\":true}]}"
                         },
                         "description": "",
                         "auth": {
@@ -384,7 +920,7 @@
                                 {
                                     "id": "id",
                                     "key": "id",
-                                    "value": "16",
+                                    "value": "1",
                                     "description": "The ID of the question."
                                 }
                             ]
@@ -505,6 +1041,118 @@
                         }
                     },
                     "response": []
+                },
+                {
+                    "name": "GET api\/leaderboard",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/leaderboard",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/leaderboard"
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "http:\/\/localhost:5173"
+                                },
+                                {
+                                    "key": "access-control-allow-credentials",
+                                    "value": "true"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
+                },
+                {
+                    "name": "GET api\/user-rank\/{user_id}",
+                    "request": {
+                        "url": {
+                            "host": "{{baseUrl}}",
+                            "path": "api\/user-rank\/:user_id",
+                            "query": [],
+                            "raw": "{{baseUrl}}\/api\/user-rank\/:user_id",
+                            "variable": [
+                                {
+                                    "id": "user_id",
+                                    "key": "user_id",
+                                    "value": "architecto",
+                                    "description": "The ID of the user."
+                                }
+                            ]
+                        },
+                        "method": "GET",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application\/json"
+                            },
+                            {
+                                "key": "Accept",
+                                "value": "application\/json"
+                            }
+                        ],
+                        "body": null,
+                        "description": "",
+                        "auth": {
+                            "type": "noauth"
+                        }
+                    },
+                    "response": [
+                        {
+                            "header": [
+                                {
+                                    "key": "cache-control",
+                                    "value": "no-cache, private"
+                                },
+                                {
+                                    "key": "content-type",
+                                    "value": "application\/json"
+                                },
+                                {
+                                    "key": "access-control-allow-origin",
+                                    "value": "http:\/\/localhost:5173"
+                                },
+                                {
+                                    "key": "access-control-allow-credentials",
+                                    "value": "true"
+                                }
+                            ],
+                            "code": 401,
+                            "body": "{\"message\":\"Unauthenticated.\"}",
+                            "name": ""
+                        }
+                    ]
                 }
             ]
         }

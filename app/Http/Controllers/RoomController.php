@@ -1,60 +1,627 @@
 <?php
-//HERE
+
 namespace App\Http\Controllers;
+
+use App\Models\Quiz;
+use App\Models\User;
 use Illuminate\Routing\Controller;
-use App\Events\TestBroadcast;
+use App\Events\CreateRoom;
+use App\Events\UserChange;
+use App\Events\UserLeft;
+use App\Events\QuizSelected;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use App\Models\Room;
+use Illuminate\Support\Facades\Cache;
+use App\Http\Controllers\GameController;
 
 class RoomController extends Controller
 {
-    public function sendTestBroadcast()
+
+    protected $gameController;
+
+    // Inject GameController into the constructor
+    public function __construct(GameController $gameController)
     {
-        $message = "This is a test broadcast from the backend/ this means the test worked!/ backend msg";
+        $this->gameController = $gameController;
+    }
+
+    public function handleAnswerSubmission($roomCode, $userId, $questionId, $answerId = null)
+    {
+        $request = new Request([
+            'roomCode' => $roomCode,
+            'userId' => $userId,
+            'questionId' => $questionId,
+            'answerId' => $answerId,
+        ]);
+
+        return $this->gameController->submitAnswer($request);
+    }
+
+
+    public function createRoom(Request $request)
+    {
+        $request->validate([
+            'userName' => 'required|string|max:255',
+            'userId' => 'required',
+            'quizId' => 'nullable|integer',
+            'votingMethod' => 'nullable|string|in:manual,automatic', // Add this
+        ]);
+
+        // Get the voting method, default to manual if not provided
+        $votingMethod = $request->input('votingMethod', 'manual');
+
+        $roomCode = Str::upper(Str::random(6));
+        $userName = $request->input('userName');
+        $userId = $request->input('userId');
+        $quizId = $request->input('quizId');
+
         try {
-            event(new TestBroadcast($message));
-            return response()->json(['message' => 'Test broadcast sent!/ backend msg']);
+
+            $user = User::find($userId);
+            $profilePicture = $user ? $user->profile_picture : null;
+
+            $host = [
+                'id' => $userId,
+                'name' => $userName,
+                'isHost' => true,
+                'profilePicture' => $profilePicture
+            ];
+            $roomData = [
+                'users' => [$host],
+                'selectedQuiz' => null,
+                'isGameStarted' => false,
+                'isOpen' => true, // Add this
+                'votingMethod' => $votingMethod, // Add this
+                'suggestedQuizzes' => [], // Add this
+            ];
+
+            if ($quizId) {
+                $quiz = Quiz::find($quizId);
+
+                if (!$quiz) {
+                    return response()->json(['error' => 'Quiz not found'], 404);
+                }
+
+                $roomData['selectedQuiz'] = [
+                    'id' => $quiz->id,
+                    'title' => $quiz->title,
+                    'description' => $quiz->description,
+                    'img_url' => $quiz->img_url,
+                    'created_by' => $quiz->created_by,
+                    'category' => $quiz->category,
+                    'length' => $quiz->questions()->count(),
+                ];
+
+                event(new QuizSelected($roomCode, $roomData['selectedQuiz']));
+            }
+
+            Cache::put("room:$roomCode", $roomData, now()->addHours(2));
+
+            event(new CreateRoom($roomCode));
+            event(new UserChange($roomCode, [$host]));
+
+            return response()->json([
+                'room_code' => $roomCode,
+                'users' => [$host],
+                'selectedQuiz' => $roomData['selectedQuiz'],
+            ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => 'Failed to send test broadcast/ backend msg'], 500);
+            return response()->json(['error' => 'Failed to Create Room'], 500);
         }
     }
 
-    public function createRoom()
-    {
-        // Generate a 6-character unique uppercase code
-        $roomCode = Str::upper(Str::random(6));
 
-        // Store the room in the database
-        $room = Room::create([
-            'code' => $roomCode,
+    public function joinRoom(Request $request)
+    {
+        $request->validate([
+            'roomCode' => 'required|string|size:6',
+            'userName' => 'required|string|max:255',
+            'userId' => 'required',
         ]);
 
-        return response()->json(['room_code' => $room->code]);
+        $roomCode = $request->input('roomCode');
+        $userName = $request->input('userName');
+        $userId = $request->input('userId');
+
+        try {
+            $roomData = Cache::get("room:$roomCode", null);
+
+            if ($roomData === null) {
+                return response()->json(['error' => 'This room does not exist'], 404);
+            }
+
+            if ($roomData['isGameStarted']) {
+                return response()->json(['error' => 'Game has already started'], 400);
+            }
+
+            $users = $roomData['users'];
+            $existingUser = array_filter($users, fn($user) => $user['id'] === $userId);
+            if (!empty($existingUser)) {
+                return response()->json(['error' => 'User already in the room'], 400);
+            }
+
+            $user = User::find($userId);
+            $profilePicture = $user ? $user->profile_picture : null;
+
+            $users[] = [
+                'id' => $userId,
+                'name' => $userName,
+                'isHost' => false,
+                'profilePicture' => $profilePicture
+            ];
+
+            // Update the cache with the latest users list
+            Cache::put("room:$roomCode", [
+                'users' => $users,
+                'selectedQuiz' => $roomData['selectedQuiz'] ?? null, // Ensure selectedQuiz is preserved
+                'isGameStarted' => $roomData['isGameStarted'] ?? false,
+            ], now()->addHours(2));
+
+            event(new UserChange($roomCode, $users));
+
+            return response()->json([
+                'message' => "$userName joined room $roomCode",
+                'users' => $users,
+                'selectedQuiz' => $roomData['selectedQuiz'] ?? null,
+                'isGameStarted' => $roomData['isGameStarted'] ?? false,
+            ]);
+        } catch (\Exception $e) {
+            \Log::error('Error joining room: ' . $e->getMessage(), [
+                'exception' => $e,
+                'stack' => $e->getTraceAsString(),
+            ]);
+            return response()->json(['error' => 'Failed to Join Room'], 500);
+        }
+    }
+
+
+    public function leaveRoom(Request $request)
+    {
+        $request->validate([
+            'roomCode' => 'required|string|size:6',
+            'userId' => 'required',
+        ]);
+
+        $roomCode = $request->input('roomCode');
+        $userId = $request->input('userId');
+
+        try {
+            $roomData = Cache::get("room:$roomCode", []);
+            $users = $roomData['users'];
+            $gameState = $roomData['gameState'] ?? null;
+
+            $userIndex = array_search($userId, array_column($users, 'id'));
+
+            if ($userIndex === false) {
+                return response()->json(['error' => 'User not found in the room'], 404);
+            }
+
+            $isHost = $users[$userIndex]['isHost'];
+            unset($users[$userIndex]);
+
+            if ($isHost && count($users) > 0) {
+                $users = array_values($users);
+                $users[0]['isHost'] = true;
+            }
+
+            // Handle answer submission (empty answer for user leaving)
+            try {
+                $this->handleAnswerSubmission(
+                    $roomCode,
+                    $userId,
+                    $gameState['questions'][$gameState['currentQuestionIndex']]['id'],
+                    -1  // passing null as answerId for an empty answer
+                );
+            } catch (\Exception $e) {
+                \Log::error('Error while sending empty answer: ' . $e->getMessage());
+            }
+
+            // Update the cache with the latest room data
+            Cache::put("room:$roomCode", [
+                'users' => $users,
+                'selectedQuiz' => $roomData['selectedQuiz'] ?? null,
+                'isGameStarted' => $roomData['isGameStarted'] ?? false,
+                'gameState' => $roomData['gameState'] ?? null,
+            ], now()->addHours(2));
+
+            event(new UserChange($roomCode, $users));
+
+            // If the room is empty after the user leaves, remove the cache
+            if (empty($users)) {
+                Cache::forget("room:$roomCode");
+            }
+
+            // Now recheck if all players have answered the current question
+            try {
+                $this->checkAllPlayersAnswered($roomCode, $roomData);
+            } catch (\Exception $e) {
+                \Log::error('Error while checking answers: ' . $e->getMessage());
+            }
+
+            return response()->json(['message' => "User $userId left room $roomCode"]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to Leave Room'], 500);
+        }
+    }
+
+    protected function checkAllPlayersAnswered($roomCode, $roomData)
+    {
+        // Get the current question index
+            $gameState = $roomData['gameState'];
+            $questionId = $gameState['questions'][$gameState['currentQuestionIndex']]['id'];
+
+            $allAnswered = true;
+            foreach ($roomData['users'] as $user) {
+                if (!isset($gameState['playerAnswers'][$user['id']][$questionId])) {
+                    $allAnswered = false;
+                    break;
+                }
+            }
+            if ($allAnswered) {
+                // All players have answered, handle moving to the next question or finalizing
+                $this->moveToNextQuestionOrEndQuiz($roomCode, $gameState, $roomData);
+            } else {
+
+            }
+    }
+
+    protected function moveToNextQuestionOrEndQuiz($roomCode, $gameState, $roomData)
+    {
+        // Get current question
+        $currentIndex = $gameState['currentQuestionIndex'];
+        $nextIndex = $currentIndex + 1;
+
+        if ($nextIndex < count($gameState['questions'])) {
+            // Move to the next question
+            $gameState['currentQuestionIndex'] = $nextIndex;
+            $roomData['gameState'] = $gameState;
+            Cache::put("room:$roomCode", $roomData, now()->addHours(2));
+
+            $nextQuestion = $this->prepareQuestionForBroadcast($gameState['questions'][$nextIndex]);
+
+            event(new QuestionSent($roomCode, $nextQuestion, $nextIndex + 1, count($gameState['questions'])));
+        } else {
+            // End the quiz
+            $gameState['status'] = 'ended';
+            $roomData['gameState'] = $gameState;
+            Cache::put("room:$roomCode", $roomData, now()->addHours(2));
+
+            $leaderboard = $this->calculateLeaderboard($gameState, $roomData);
+
+            event(new QuizEnded($roomCode, $leaderboard));
+        }
+    }
+
+
+    public function getRoomInfo(Request $request)
+    {
+        $roomCode = $request->query('roomCode');
+        $roomData = Cache::get("room:$roomCode", []);
+
+        if ($roomData) {
+            return response()->json([
+                'users' => $roomData['users'],
+                'selectedQuiz' => $roomData['selectedQuiz'],
+            ]);
+        }
+
+        return response()->json(['error' => 'Room not found'], 404);
+    }
+
+    public function selectQuiz(Request $request)
+    {
+        $request->validate([
+            'roomCode' => 'required|string|size:6',
+            'quizId' => 'required|integer',
+        ]);
+
+        $roomCode = $request->input('roomCode');
+        $quizId = $request->input('quizId');
+
+        try {
+            $quiz = Quiz::find($quizId);
+
+            if (!$quiz) {
+                return response()->json(['error' => 'Quiz not found'], 404);
+            }
+
+            $roomData = Cache::get("room:$roomCode", []);
+
+            $users = $roomData['users'];
+
+            Cache::put("room:$roomCode", [
+                'users' => $users,
+                'selectedQuiz' => [
+                    'id' => $quiz->id,
+                    'title' => $quiz->title,
+                    'description' => $quiz->description,
+                    'img_url' => $quiz->img_url,
+                    'created_by' => $quiz->created_by,
+                    'category' => $quiz->category,
+                    'length' => $quiz->questions()->count(),
+                ],
+                'isGameStarted' => $quiz->isGameStarted
+            ], now()->addHours(2));
+
+            event(new QuizSelected($roomCode, [
+                'id' => $quiz->id,
+                'title' => $quiz->title,
+                'description' => $quiz->description,
+                'img_url' => $quiz->img_url,
+                'created_by' => $quiz->created_by,
+                'category' => $quiz->category,
+                'length' => $quiz->questions()->count(),
+            ]));
+
+            return response()->json([
+                'message' => 'Quiz selected',
+                'quiz' => [
+                    'id' => $quiz->id,
+                    'title' => $quiz->title,
+                    'description' => $quiz->description,
+                    'img_url' => $quiz->img_url,
+                    'created_by' => $quiz->created_by,
+                    'category' => $quiz->category,
+                    'length' => $quiz->questions()->count(),
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to select quiz'], 500);
+        }
     }
 
     /**
-     * Join a room using a code.
+     * Toggle room status (open/closed)
      */
-    public function joinRoom(Request $request)
+    public function toggleRoomStatus(Request $request)
     {
-        // Validate input
         $request->validate([
-            'room_code' => 'required|string|size:6',
+            'roomCode' => 'required|string|size:6',
+            'userId' => 'required',
+            'isOpen' => 'required|boolean',
         ]);
 
-        // Check if the room exists
-        $room = Room::where('code', $request->room_code)->first();
+        $roomCode = $request->input('roomCode');
+        $userId = $request->input('userId');
+        $isOpen = $request->input('isOpen');
 
-        if (!$room) {
-            return response()->json(['error' => 'Invalid room code'], 404);
+        try {
+            $roomData = Cache::get("room:$roomCode", null);
+
+            if (!$roomData) {
+                return response()->json(['error' => 'Room not found'], 404);
+            }
+
+            // Check if user is host
+            $isHost = false;
+            foreach ($roomData['users'] as $user) {
+                if ($user['id'] === $userId && $user['isHost']) {
+                    $isHost = true;
+                    break;
+                }
+            }
+
+            if (!$isHost) {
+                return response()->json(['error' => 'Only the host can change room status'], 403);
+            }
+
+            // Update room status
+            $roomData['isOpen'] = $isOpen;
+            Cache::put("room:$roomCode", $roomData, now()->addHours(2));
+
+            // Create a new event for room status change
+            event(new RoomStatusChanged($roomCode, $isOpen));
+
+            return response()->json([
+                'message' => 'Room status updated',
+                'isOpen' => $isOpen
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update room status'], 500);
         }
+    }
 
-        return response()->json([
-            'success' => true,
-            'room_code' => $room->code,
-            'channel_name' => 'quiz-game.' . $room->id, // Use this for broadcasting
+    /**
+     * Host selects quiz from suggestions
+     */
+    public function selectVotedQuiz(Request $request)
+    {
+        $request->validate([
+            'roomCode' => 'required|string|size:6',
+            'userId' => 'required',
+            'quizId' => 'required|integer',
         ]);
+
+        $roomCode = $request->input('roomCode');
+        $userId = $request->input('userId');
+        $quizId = $request->input('quizId');
+
+        try {
+            $roomData = Cache::get("room:$roomCode", null);
+
+            if (!$roomData) {
+                return response()->json(['error' => 'Room not found'], 404);
+            }
+
+            // Check if user is host
+            $isHost = false;
+            foreach ($roomData['users'] as $user) {
+                if ($user['id'] === $userId && $user['isHost']) {
+                    $isHost = true;
+                    break;
+                }
+            }
+
+            if (!$isHost) {
+                return response()->json(['error' => 'Only the host can select quizzes'], 403);
+            }
+
+            // Check if the quiz is in the suggested list
+            $selectedQuizData = null;
+            foreach ($roomData['suggestedQuizzes'] as $quiz) {
+                if ($quiz['id'] == $quizId) {
+                    $selectedQuizData = $quiz;
+                    break;
+                }
+            }
+
+            if (!$selectedQuizData) {
+                return response()->json(['error' => 'Quiz not found in suggestions'], 404);
+            }
+
+            // Update the room with the selected quiz
+            $roomData['selectedQuiz'] = [
+                'id' => $selectedQuizData['id'],
+                'title' => $selectedQuizData['title'],
+                'description' => $selectedQuizData['description'],
+                'img_url' => $selectedQuizData['img_url'],
+                'category' => $selectedQuizData['category'],
+                'length' => $selectedQuizData['length'],
+                'votes' => count($selectedQuizData['votes']),
+            ];
+
+            Cache::put("room:$roomCode", $roomData, now()->addHours(2));
+
+            // Broadcast the selected quiz
+            event(new QuizSelected($roomCode, $roomData['selectedQuiz']));
+
+            return response()->json([
+                'message' => 'Quiz selected by host',
+                'selectedQuiz' => $roomData['selectedQuiz']
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to select quiz: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Select highest voted quiz automatically
+     */
+    public function selectHighestVotedQuiz(Request $request)
+    {
+        $request->validate([
+            'roomCode' => 'required|string|size:6',
+            'userId' => 'required',
+        ]);
+
+        $roomCode = $request->input('roomCode');
+        $userId = $request->input('userId');
+
+        try {
+            $roomData = Cache::get("room:$roomCode", null);
+
+            if (!$roomData) {
+                return response()->json(['error' => 'Room not found'], 404);
+            }
+
+            // Check if user is host
+            $isHost = false;
+            foreach ($roomData['users'] as $user) {
+                if ($user['id'] === $userId && $user['isHost']) {
+                    $isHost = true;
+                    break;
+                }
+            }
+
+            if (!$isHost) {
+                return response()->json(['error' => 'Only the host can start voting process'], 403);
+            }
+
+            if (!isset($roomData['suggestedQuizzes']) || count($roomData['suggestedQuizzes']) === 0) {
+                return response()->json(['error' => 'No quizzes have been suggested'], 404);
+            }
+
+            // Find the quiz with the most votes
+            $highestVotes = -1;
+            $selectedQuiz = null;
+
+            foreach ($roomData['suggestedQuizzes'] as $quiz) {
+                $voteCount = count($quiz['votes'] ?? []);
+                if ($voteCount > $highestVotes) {
+                    $highestVotes = $voteCount;
+                    $selectedQuiz = $quiz;
+                }
+            }
+
+            if (!$selectedQuiz) {
+                return response()->json(['error' => 'No quiz found with votes'], 404);
+            }
+
+            // Update the room with the selected quiz
+            $roomData['selectedQuiz'] = [
+                'id' => $selectedQuiz['id'],
+                'title' => $selectedQuiz['title'],
+                'description' => $selectedQuiz['description'],
+                'img_url' => $selectedQuiz['img_url'],
+                'category' => $selectedQuiz['category'],
+                'length' => $selectedQuiz['length'],
+                'votes' => $highestVotes,
+            ];
+
+            Cache::put("room:$roomCode", $roomData, now()->addHours(2));
+
+            // Broadcast the selected quiz
+            event(new QuizSelected($roomCode, $roomData['selectedQuiz']));
+
+            return response()->json([
+                'message' => 'Highest voted quiz selected automatically',
+                'selectedQuiz' => $roomData['selectedQuiz'],
+                'voteCount' => $highestVotes
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to select highest voted quiz: ' . $e->getMessage()], 500);
+        }
+    }
+
+    /**
+     * Set the voting method for quiz selection
+     */
+    public function setVotingMethod(Request $request)
+    {
+        $request->validate([
+            'roomCode' => 'required|string|size:6',
+            'userId' => 'required',
+            'votingMethod' => 'required|string|in:manual,automatic',
+        ]);
+
+        $roomCode = $request->input('roomCode');
+        $userId = $request->input('userId');
+        $votingMethod = $request->input('votingMethod');
+
+        try {
+            $roomData = Cache::get("room:$roomCode", null);
+
+            if (!$roomData) {
+                return response()->json(['error' => 'Room not found'], 404);
+            }
+
+            // Check if user is host
+            $isHost = false;
+            foreach ($roomData['users'] as $user) {
+                if ($user['id'] === $userId && $user['isHost']) {
+                    $isHost = true;
+                    break;
+                }
+            }
+
+            if (!$isHost) {
+                return response()->json(['error' => 'Only the host can change voting settings'], 403);
+            }
+
+            // Update voting method
+            $roomData['votingMethod'] = $votingMethod;
+            Cache::put("room:$roomCode", $roomData, now()->addHours(2));
+
+            // Create a new event for voting method change
+            event(new VotingMethodChanged($roomCode, $votingMethod));
+
+            return response()->json([
+                'message' => 'Voting method updated',
+                'votingMethod' => $votingMethod
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Failed to update voting method'], 500);
+        }
     }
 
 }

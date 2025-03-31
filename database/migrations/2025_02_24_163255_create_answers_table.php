@@ -17,6 +17,8 @@ return new class extends Migration
             $table->text('answer_text');
             $table->boolean('is_correct')->default(false);
             $table->timestamps();
+            $table->integer('points')->default(1);
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
         });
     }
 
@@ -27,5 +29,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('answers');
+        $table->dropForeign(['user_id']);
+        $table->dropColumn('user_id');
     }
 };

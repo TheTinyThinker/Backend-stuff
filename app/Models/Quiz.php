@@ -17,6 +17,10 @@ class Quiz extends Model
         'img_url',
         'show_correct_answer',
         'is_public',
+        'play_count',
+        'correct_answer_percentage',
+        'average_rating',
+        'rating_count',
     ];
 
     protected $casts = [
@@ -37,5 +41,9 @@ class Quiz extends Model
     public function getCreatedByAttribute()
     {
         return $this->user ? $this->user->name : 'Unknown';
+    }
+
+    public function getImageUrlAttribute() {
+        return $this->image ? Storage::url($this->image) : null;
     }
 }

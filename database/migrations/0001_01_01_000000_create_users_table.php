@@ -17,6 +17,16 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            $table->string('profile_picture')->nullable();
+            // Stats columns
+            $table->bigInteger('total_score')->default(0);
+            $table->integer('correct_answers')->default(0);
+            $table->integer('incorrect_answers')->default(0);
+            $table->decimal('correct_percentage', 5, 2)->default(0);
+            $table->integer('total_questions_answered')->default(0);
+            $table->integer('total_quizzes_attempted')->default(0);
+            $table->integer('highest_score')->default(0);
+            $table->decimal('average_score', 8, 2)->default(0);
             $table->rememberToken();
             $table->timestamps();
         });

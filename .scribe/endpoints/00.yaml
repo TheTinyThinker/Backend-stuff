@@ -4,48 +4,18 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/send-test-broadcast
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: ''
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters: []
-    cleanUrlParameters: []
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters: []
-    cleanBodyParameters: []
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - POST
     uri: api/register
     metadata:
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Register a new user with an optional profile picture'
       description: ''
       authenticated: false
       custom: []
     headers:
-      Content-Type: application/json
+      Content-Type: multipart/form-data
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
@@ -82,11 +52,22 @@ endpoints:
         exampleWasSpecified: false
         nullable: false
         custom: []
+      profile_picture:
+        name: profile_picture
+        description: 'Must be an image. Must not be greater than 10240 kilobytes.'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
     cleanBodyParameters:
       name: b
       email: zbailey@example.net
       password: '-0pBNvYgxw'
-    fileParameters: []
+    fileParameters:
+      profile_picture: null
     responses: []
     responseFields: []
     auth: []
@@ -103,7 +84,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Log in a user and return an authentication token'
       description: ''
       authenticated: false
       custom: []
@@ -148,8 +129,240 @@ endpoints:
     custom: []
   -
     httpMethods:
+      - GET
+    uri: 'api/users/{id}/stats'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Display the specified user profile with stats.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the user.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 404
+        content: |-
+          {
+              "message": "No query results for model [App\\Models\\User] architecto"
+          }
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: 'http://localhost:5173'
+          access-control-allow-credentials: 'true'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
       - POST
-    uri: api/create-room
+    uri: api/rooms/create
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      userName:
+        name: userName
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: b
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      userId:
+        name: userId
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      quizId:
+        name: quizId
+        description: ''
+        required: false
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+    cleanBodyParameters:
+      userName: b
+      userId: architecto
+      quizId: 16
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/rooms/join
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      roomCode:
+        name: roomCode
+        description: 'Must be 6 characters.'
+        required: true
+        example: bngzmi
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      userName:
+        name: userName
+        description: 'Must not be greater than 255 characters.'
+        required: true
+        example: 'y'
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      userId:
+        name: userId
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      roomCode: bngzmi
+      userName: 'y'
+      userId: architecto
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/rooms/leave
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      roomCode:
+        name: roomCode
+        description: 'Must be 6 characters.'
+        required: true
+        example: bngzmi
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      userId:
+        name: userId
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      roomCode: bngzmi
+      userId: architecto
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/rooms/info
     metadata:
       groupName: Endpoints
       groupDescription: ''
@@ -169,7 +382,17 @@ endpoints:
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
-    responses: []
+    responses:
+      -
+        status: 404
+        content: '{"error":"Room not found"}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: 'http://localhost:5173'
+          access-control-allow-credentials: 'true'
+        description: null
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -179,13 +402,13 @@ endpoints:
   -
     httpMethods:
       - POST
-    uri: api/join-room
+    uri: api/rooms/select-quiz
     metadata:
       groupName: Endpoints
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: 'Join a room using a code.'
+      title: ''
       description: ''
       authenticated: false
       custom: []
@@ -197,8 +420,185 @@ endpoints:
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      room_code:
-        name: room_code
+      roomCode:
+        name: roomCode
+        description: 'Must be 6 characters.'
+        required: true
+        example: bngzmi
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      quizId:
+        name: quizId
+        description: ''
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      roomCode: bngzmi
+      quizId: 16
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/game/start
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      roomCode:
+        name: roomCode
+        description: 'Must be 6 characters.'
+        required: true
+        example: bngzmi
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      userId:
+        name: userId
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanBodyParameters:
+      roomCode: bngzmi
+      userId: architecto
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: api/game/submit-answer
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      roomCode:
+        name: roomCode
+        description: 'Must be 6 characters.'
+        required: true
+        example: bngzmi
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      userId:
+        name: userId
+        description: ''
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      questionId:
+        name: questionId
+        description: ''
+        required: true
+        example: 16
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+      answerId:
+        name: answerId
+        description: ''
+        required: false
+        example: null
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+    cleanBodyParameters:
+      roomCode: bngzmi
+      userId: architecto
+      questionId: 16
+    fileParameters: []
+    responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/leaderboard/results
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      roomCode:
+        name: roomCode
         description: 'Must be 6 characters.'
         required: true
         example: bngzmi
@@ -208,8 +608,174 @@ endpoints:
         nullable: false
         custom: []
     cleanBodyParameters:
-      room_code: bngzmi
+      roomCode: bngzmi
     fileParameters: []
+    responses:
+      -
+        status: 404
+        content: '{"error":"Game not found"}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: 'http://localhost:5173'
+          access-control-allow-credentials: 'true'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/quizzes
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Display a listing of the resource.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '[{"id":1,"user_id":1,"title":"dsdssd","description":"dsdsdsds","category":"","img_url":"quiz_images\/A99yAyK0pXJRDLknIPKA1vqsj0ORBFpe3EeJna8l.jpg","show_correct_answer":true,"is_public":true,"created_at":"2025-03-10T15:10:38.000000Z","updated_at":"2025-03-10T15:10:38.000000Z","created_by":"lew","user":{"id":1,"name":"lew"}},{"id":3,"user_id":11,"title":"IMAGE ARRAY TEST","description":"udsuidsiudsiu","category":"","img_url":"","show_correct_answer":true,"is_public":true,"created_at":"2025-03-11T12:12:39.000000Z","updated_at":"2025-03-11T12:12:39.000000Z","created_by":"CRAB_GAMING","user":{"id":11,"name":"CRAB_GAMING"}},{"id":4,"user_id":11,"title":"test5","description":"rereerer","category":"","img_url":"quiz_images\/rXs7pBO1LQMFkhf9WKLsNNHmdbZZSXRM2dM9wtRC.jpg","show_correct_answer":true,"is_public":true,"created_at":"2025-03-11T12:18:32.000000Z","updated_at":"2025-03-11T12:18:32.000000Z","created_by":"CRAB_GAMING","user":{"id":11,"name":"CRAB_GAMING"}},{"id":10,"user_id":11,"title":"7675555556","description":"767667","category":"","img_url":"","show_correct_answer":true,"is_public":true,"created_at":"2025-03-11T12:47:41.000000Z","updated_at":"2025-03-11T12:47:41.000000Z","created_by":"CRAB_GAMING","user":{"id":11,"name":"CRAB_GAMING"}},{"id":13,"user_id":11,"title":"asdfg","description":"asdf","category":"","img_url":"quiz_images\/7rlbyTPFMRlHneCUq6AK5YC7CCidJnBgg16hYHXZ.jpg","show_correct_answer":true,"is_public":true,"created_at":"2025-03-11T13:03:03.000000Z","updated_at":"2025-03-11T13:03:03.000000Z","created_by":"CRAB_GAMING","user":{"id":11,"name":"CRAB_GAMING"}},{"id":14,"user_id":11,"title":"efrfrrfrf","description":"rererere","category":"","img_url":"quiz_images\/PgRKSoj01lm2bmxk8s4GOr5jKcx5VCIF63IPN2HH.jpg","show_correct_answer":true,"is_public":true,"created_at":"2025-03-11T13:18:32.000000Z","updated_at":"2025-03-11T13:18:32.000000Z","created_by":"CRAB_GAMING","user":{"id":11,"name":"CRAB_GAMING"}},{"id":15,"user_id":12,"title":"jjj","description":"jjj","category":"","img_url":"","show_correct_answer":true,"is_public":true,"created_at":"2025-03-11T13:44:36.000000Z","updated_at":"2025-03-11T13:44:36.000000Z","created_by":"joining","user":{"id":12,"name":"joining"}},{"id":18,"user_id":16,"title":"TEST HEREEEEEEE","description":"uygsuayasguyyug","category":"Sports","img_url":"quiz_images\/iF31AdfTX4BqW9i0L7gWYkjQf9L1MVDVZZLulWDQ.jpg","show_correct_answer":true,"is_public":true,"created_at":"2025-03-19T14:27:31.000000Z","updated_at":"2025-03-19T14:27:31.000000Z","created_by":"lew5","user":{"id":16,"name":"lew5"}},{"id":19,"user_id":20,"title":"Showcase Quiz","description":"showcase quiz","category":"Sports","img_url":"quiz_images\/WKaYYNlUp1IsbxmqyMwkzFfIVWp19849r8V9c0T2.jpg","show_correct_answer":true,"is_public":true,"created_at":"2025-03-19T17:32:27.000000Z","updated_at":"2025-03-19T17:32:27.000000Z","created_by":"crabImageMan","user":{"id":20,"name":"crabImageMan"}},{"id":20,"user_id":16,"title":"ggfgfgffg","description":"gfgfgfg","category":"History","img_url":"https:\/\/images.pexels.com\/photos\/459124\/pexels-photo-459124.jpeg?auto=compress&cs=tinysrgb&h=650&w=940","show_correct_answer":true,"is_public":true,"created_at":"2025-03-24T10:13:53.000000Z","updated_at":"2025-03-24T10:13:53.000000Z","created_by":"lew5","user":{"id":16,"name":"lew5"}},{"id":21,"user_id":16,"title":"dsdsds","description":"dsdsdsd","category":"Geography","img_url":"https:\/\/images.pexels.com\/photos\/53114\/horse-arabs-stallion-ride-53114.jpeg?auto=compress&cs=tinysrgb&h=650&w=940","show_correct_answer":true,"is_public":true,"created_at":"2025-03-24T10:20:42.000000Z","updated_at":"2025-03-24T10:20:42.000000Z","created_by":"lew5","user":{"id":16,"name":"lew5"}},{"id":22,"user_id":16,"title":"ONE FOR SHOWCASE","description":"blah blah","category":"Geography","img_url":"https:\/\/images.pexels.com\/photos\/1098515\/pexels-photo-1098515.jpeg?auto=compress&cs=tinysrgb&h=650&w=940","show_correct_answer":true,"is_public":true,"created_at":"2025-03-24T10:58:40.000000Z","updated_at":"2025-03-24T10:58:40.000000Z","created_by":"lew5","user":{"id":16,"name":"lew5"}},{"id":23,"user_id":16,"title":"ddssd","description":"sdsdsd","category":"Geography","img_url":"","show_correct_answer":true,"is_public":true,"created_at":"2025-03-24T16:42:25.000000Z","updated_at":"2025-03-24T16:42:25.000000Z","created_by":"lew5","user":{"id":16,"name":"lew5"}}]'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: 'http://localhost:5173'
+          access-control-allow-credentials: 'true'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/quizzes/{id}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Display the specified resource.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the quiz.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 200
+        content: '{"id":1,"user_id":1,"title":"dsdssd","description":"dsdsdsds","category":"","img_url":"quiz_images\/A99yAyK0pXJRDLknIPKA1vqsj0ORBFpe3EeJna8l.jpg","show_correct_answer":true,"is_public":true,"created_at":"2025-03-10T15:10:38.000000Z","updated_at":"2025-03-10T15:10:38.000000Z","created_by":"lew","user":{"id":1,"name":"lew"},"questions":[]}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: 'http://localhost:5173'
+          access-control-allow-credentials: 'true'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - POST
+    uri: 'api/quizzes/{id}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Update the specified resource in storage.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: multipart/form-data
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the quiz.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters:
+      image:
+        name: image
+        description: 'Must be an image. Must not be greater than 2048 kilobytes.'
+        required: false
+        example: null
+        type: file
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+      question_images:
+        name: question_images
+        description: 'Must be an image. Must not be greater than 2048 kilobytes.'
+        required: false
+        example:
+          - null
+        type: 'file[]'
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: true
+        custom: []
+    cleanBodyParameters: []
+    fileParameters:
+      image: null
+      question_images:
+        - null
     responses: []
     responseFields: []
     auth: []
@@ -226,7 +792,7 @@ endpoints:
       groupDescription: ''
       subgroup: ''
       subgroupDescription: ''
-      title: ''
+      title: 'Log out a user by revoking their authentication token'
       description: ''
       authenticated: false
       custom: []
@@ -261,292 +827,39 @@ endpoints:
       authenticated: false
       custom: []
     headers:
-      Content-Type: application/json
+      Content-Type: multipart/form-data
       Accept: application/json
     urlParameters: []
     cleanUrlParameters: []
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
-      title:
-        name: title
-        description: 'Must not be greater than 255 characters.'
-        required: true
-        example: b
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      description:
-        name: description
-        description: ''
-        required: false
-        example: 'Eius et animi quos velit et.'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      category:
-        name: category
-        description: 'Must not be greater than 255 characters.'
-        required: false
-        example: v
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      img_url:
-        name: img_url
-        description: 'Must not be greater than 2048 characters.'
-        required: false
-        example: 'http://www.dach.com/mollitia-modi-deserunt-aut-ab-provident-perspiciatis-quo.html'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      show_correct_answer:
-        name: show_correct_answer
-        description: ''
-        required: false
-        example: true
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      is_public:
-        name: is_public
-        description: ''
-        required: false
-        example: true
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      questions:
-        name: questions
-        description: 'Add this line.'
+      image:
+        name: image
+        description: 'Must be an image. Must not be greater than 2048 kilobytes.'
         required: false
         example: null
-        type: 'object[]'
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      'questions[].question_text':
-        name: 'questions[].question_text'
-        description: 'This field is required when <code>questions</code> is present.'
-        required: false
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      'questions[].question_type':
-        name: 'questions[].question_type'
-        description: 'This field is required when <code>questions</code> is present.'
-        required: false
-        example: 'single choice'
-        type: string
-        enumValues:
-          - 'single choice'
-          - 'multiple choice'
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      'questions[].difficulty':
-        name: 'questions[].difficulty'
-        description: ''
-        required: false
-        example: architecto
-        type: string
+        type: file
         enumValues: []
         exampleWasSpecified: false
         nullable: true
         custom: []
-      'questions[].img_url':
-        name: 'questions[].img_url'
-        description: ''
+      question_images:
+        name: question_images
+        description: 'Must be an image. Must not be greater than 2048 kilobytes.'
         required: false
-        example: 'http://www.bailey.biz/quos-velit-et-fugiat-sunt-nihil-accusantium-harum.html'
-        type: string
+        example:
+          - null
+        type: 'file[]'
         enumValues: []
         exampleWasSpecified: false
         nullable: true
         custom: []
-      'questions[].time_to_answer':
-        name: 'questions[].time_to_answer'
-        description: ''
-        required: false
-        example: 16
-        type: integer
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      'questions[].answer_options':
-        name: 'questions[].answer_options'
-        description: 'This field is required when <code>questions</code> is present. Must have at least 1 items.'
-        required: false
-        example: null
-        type: 'object[]'
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      'questions[].answer_options[].answer_text':
-        name: 'questions[].answer_options[].answer_text'
-        description: ''
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      'questions[].answer_options[].is_correct':
-        name: 'questions[].answer_options[].is_correct'
-        description: ''
-        required: true
-        example: false
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      title: b
-      description: 'Eius et animi quos velit et.'
-      category: v
-      img_url: 'http://www.dach.com/mollitia-modi-deserunt-aut-ab-provident-perspiciatis-quo.html'
-      show_correct_answer: true
-      is_public: true
-      questions:
-        -
-          question_text: architecto
-          question_type: 'single choice'
-          difficulty: architecto
-          img_url: 'http://www.bailey.biz/quos-velit-et-fugiat-sunt-nihil-accusantium-harum.html'
-          time_to_answer: 16
-          answer_options:
-            -
-              answer_text: architecto
-              is_correct: false
-    fileParameters: []
-    responses: []
-    responseFields: []
-    auth: []
-    controller: null
-    method: null
-    route: null
-    custom: []
-  -
-    httpMethods:
-      - PUT
-      - PATCH
-    uri: 'api/quizzes/{id}'
-    metadata:
-      groupName: Endpoints
-      groupDescription: ''
-      subgroup: ''
-      subgroupDescription: ''
-      title: 'Update the specified resource in storage.'
-      description: ''
-      authenticated: false
-      custom: []
-    headers:
-      Content-Type: application/json
-      Accept: application/json
-    urlParameters:
-      id:
-        name: id
-        description: 'The ID of the quiz.'
-        required: true
-        example: architecto
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanUrlParameters:
-      id: architecto
-    queryParameters: []
-    cleanQueryParameters: []
-    bodyParameters:
-      title:
-        name: title
-        description: 'Must not be greater than 255 characters.'
-        required: true
-        example: b
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      description:
-        name: description
-        description: ''
-        required: false
-        example: 'Eius et animi quos velit et.'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      category:
-        name: category
-        description: 'Must not be greater than 255 characters.'
-        required: false
-        example: v
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      img_url:
-        name: img_url
-        description: 'Must not be greater than 2048 characters.'
-        required: false
-        example: 'http://www.dach.com/mollitia-modi-deserunt-aut-ab-provident-perspiciatis-quo.html'
-        type: string
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: true
-        custom: []
-      show_correct_answer:
-        name: show_correct_answer
-        description: ''
-        required: false
-        example: true
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-      is_public:
-        name: is_public
-        description: ''
-        required: false
-        example: false
-        type: boolean
-        enumValues: []
-        exampleWasSpecified: false
-        nullable: false
-        custom: []
-    cleanBodyParameters:
-      title: b
-      description: 'Eius et animi quos velit et.'
-      category: v
-      img_url: 'http://www.dach.com/mollitia-modi-deserunt-aut-ab-provident-perspiciatis-quo.html'
-      show_correct_answer: true
-      is_public: false
-    fileParameters: []
+    cleanBodyParameters: []
+    fileParameters:
+      image: null
+      question_images:
+        - null
     responses: []
     responseFields: []
     auth: []
@@ -575,20 +888,60 @@ endpoints:
         name: id
         description: 'The ID of the quiz.'
         required: true
-        example: architecto
-        type: string
+        example: 1
+        type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: architecto
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
     cleanBodyParameters: []
     fileParameters: []
     responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/questions
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Display a listing of the questions.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: 'http://localhost:5173'
+          access-control-allow-credentials: 'true'
+        description: null
+        custom: []
     responseFields: []
     auth: []
     controller: null
@@ -730,6 +1083,57 @@ endpoints:
     custom: []
   -
     httpMethods:
+      - GET
+    uri: 'api/questions/{id}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: 'Display the specified question.'
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      id:
+        name: id
+        description: 'The ID of the question.'
+        required: true
+        example: 1
+        type: integer
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      id: 1
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: 'http://localhost:5173'
+          access-control-allow-credentials: 'true'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
       - PUT
       - PATCH
     uri: 'api/questions/{id}'
@@ -750,14 +1154,14 @@ endpoints:
         name: id
         description: 'The ID of the question.'
         required: true
-        example: 16
+        example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 16
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters:
@@ -858,7 +1262,7 @@ endpoints:
         name: 'answer_options[].is_correct'
         description: ''
         required: true
-        example: false
+        example: true
         type: boolean
         enumValues: []
         exampleWasSpecified: false
@@ -874,7 +1278,7 @@ endpoints:
       answer_options:
         -
           answer_text: architecto
-          is_correct: false
+          is_correct: true
     fileParameters: []
     responses: []
     responseFields: []
@@ -904,14 +1308,14 @@ endpoints:
         name: id
         description: 'The ID of the question.'
         required: true
-        example: 16
+        example: 1
         type: integer
         enumValues: []
         exampleWasSpecified: false
         nullable: false
         custom: []
     cleanUrlParameters:
-      id: 16
+      id: 1
     queryParameters: []
     cleanQueryParameters: []
     bodyParameters: []
@@ -1086,6 +1490,97 @@ endpoints:
     cleanBodyParameters: []
     fileParameters: []
     responses: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: api/leaderboard
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters: []
+    cleanUrlParameters: []
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: 'http://localhost:5173'
+          access-control-allow-credentials: 'true'
+        description: null
+        custom: []
+    responseFields: []
+    auth: []
+    controller: null
+    method: null
+    route: null
+    custom: []
+  -
+    httpMethods:
+      - GET
+    uri: 'api/user-rank/{user_id}'
+    metadata:
+      groupName: Endpoints
+      groupDescription: ''
+      subgroup: ''
+      subgroupDescription: ''
+      title: ''
+      description: ''
+      authenticated: false
+      custom: []
+    headers:
+      Content-Type: application/json
+      Accept: application/json
+    urlParameters:
+      user_id:
+        name: user_id
+        description: 'The ID of the user.'
+        required: true
+        example: architecto
+        type: string
+        enumValues: []
+        exampleWasSpecified: false
+        nullable: false
+        custom: []
+    cleanUrlParameters:
+      user_id: architecto
+    queryParameters: []
+    cleanQueryParameters: []
+    bodyParameters: []
+    cleanBodyParameters: []
+    fileParameters: []
+    responses:
+      -
+        status: 401
+        content: '{"message":"Unauthenticated."}'
+        headers:
+          cache-control: 'no-cache, private'
+          content-type: application/json
+          access-control-allow-origin: 'http://localhost:5173'
+          access-control-allow-credentials: 'true'
+        description: null
+        custom: []
     responseFields: []
     auth: []
     controller: null

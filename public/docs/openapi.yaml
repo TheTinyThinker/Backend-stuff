@@ -11,20 +11,10 @@ tags:
     name: Endpoints
     description: ''
 paths:
-  /api/send-test-broadcast:
-    post:
-      summary: ''
-      operationId: postApiSendTestBroadcast
-      description: ''
-      parameters: []
-      responses: {  }
-      tags:
-        - Endpoints
-      security: []
   /api/register:
     post:
-      summary: ''
-      operationId: postApiRegister
+      summary: 'Register a new user with an optional profile picture'
+      operationId: registerANewUserWithAnOptionalProfilePicture
       description: ''
       parameters: []
       responses: {  }
@@ -33,7 +23,7 @@ paths:
       requestBody:
         required: true
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
@@ -52,6 +42,11 @@ paths:
                   description: 'Must be at least 8 characters.'
                   example: '-0pBNvYgxw'
                   nullable: false
+                profile_picture:
+                  type: string
+                  format: binary
+                  description: 'Must be an image. Must not be greater than 10240 kilobytes.'
+                  nullable: true
               required:
                 - name
                 - email
@@ -59,8 +54,8 @@ paths:
       security: []
   /api/login:
     post:
-      summary: ''
-      operationId: postApiLogin
+      summary: 'Log in a user and return an authentication token'
+      operationId: logInAUserAndReturnAnAuthenticationToken
       description: ''
       parameters: []
       responses: {  }
@@ -87,20 +82,41 @@ paths:
                 - email
                 - password
       security: []
-  /api/create-room:
-    post:
-      summary: ''
-      operationId: postApiCreateRoom
+  '/api/users/{id}/stats':
+    get:
+      summary: 'Display the specified user profile with stats.'
+      operationId: displayTheSpecifiedUserProfileWithStats
       description: ''
       parameters: []
-      responses: {  }
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: 'No query results for model [App\Models\User] architecto'
+                properties:
+                  message:
+                    type: string
+                    example: 'No query results for model [App\Models\User] architecto'
       tags:
         - Endpoints
       security: []
-  /api/join-room:
+    parameters:
+      -
+        in: path
+        name: id
+        description: 'The ID of the user.'
+        example: architecto
+        required: true
+        schema:
+          type: string
+  /api/rooms/create:
     post:
-      summary: 'Join a room using a code.'
-      operationId: joinARoomUsingACode
+      summary: ''
+      operationId: postApiRoomsCreate
       description: ''
       parameters: []
       responses: {  }
@@ -113,25 +129,464 @@ paths:
             schema:
               type: object
               properties:
-                room_code:
+                userName:
                   type: string
-                  description: 'Must be 6 characters.'
-                  example: bngzmi
+                  description: 'Must not be greater than 255 characters.'
+                  example: b
                   nullable: false
+                userId:
+                  type: string
+                  description: ''
+                  example: architecto
+                  nullable: false
+                quizId:
+                  type: integer
+                  description: ''
+                  example: 16
+                  nullable: true
               required:
-                - room_code
+                - userName
+                - userId
       security: []
-  /api/logout:
+  /api/rooms/join:
     post:
       summary: ''
-      operationId: postApiLogout
+      operationId: postApiRoomsJoin
       description: ''
       parameters: []
       responses: {  }
       tags:
         - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roomCode:
+                  type: string
+                  description: 'Must be 6 characters.'
+                  example: bngzmi
+                  nullable: false
+                userName:
+                  type: string
+                  description: 'Must not be greater than 255 characters.'
+                  example: 'y'
+                  nullable: false
+                userId:
+                  type: string
+                  description: ''
+                  example: architecto
+                  nullable: false
+              required:
+                - roomCode
+                - userName
+                - userId
+      security: []
+  /api/rooms/leave:
+    post:
+      summary: ''
+      operationId: postApiRoomsLeave
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roomCode:
+                  type: string
+                  description: 'Must be 6 characters.'
+                  example: bngzmi
+                  nullable: false
+                userId:
+                  type: string
+                  description: ''
+                  example: architecto
+                  nullable: false
+              required:
+                - roomCode
+                - userId
+      security: []
+  /api/rooms/info:
+    get:
+      summary: ''
+      operationId: getApiRoomsInfo
+      description: ''
+      parameters: []
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Room not found'
+                properties:
+                  error:
+                    type: string
+                    example: 'Room not found'
+      tags:
+        - Endpoints
+      security: []
+  /api/rooms/select-quiz:
+    post:
+      summary: ''
+      operationId: postApiRoomsSelectQuiz
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roomCode:
+                  type: string
+                  description: 'Must be 6 characters.'
+                  example: bngzmi
+                  nullable: false
+                quizId:
+                  type: integer
+                  description: ''
+                  example: 16
+                  nullable: false
+              required:
+                - roomCode
+                - quizId
+      security: []
+  /api/game/start:
+    post:
+      summary: ''
+      operationId: postApiGameStart
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roomCode:
+                  type: string
+                  description: 'Must be 6 characters.'
+                  example: bngzmi
+                  nullable: false
+                userId:
+                  type: string
+                  description: ''
+                  example: architecto
+                  nullable: false
+              required:
+                - roomCode
+                - userId
+      security: []
+  /api/game/submit-answer:
+    post:
+      summary: ''
+      operationId: postApiGameSubmitAnswer
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roomCode:
+                  type: string
+                  description: 'Must be 6 characters.'
+                  example: bngzmi
+                  nullable: false
+                userId:
+                  type: string
+                  description: ''
+                  example: architecto
+                  nullable: false
+                questionId:
+                  type: integer
+                  description: ''
+                  example: 16
+                  nullable: false
+                answerId:
+                  type: string
+                  description: ''
+                  example: null
+                  nullable: true
+              required:
+                - roomCode
+                - userId
+                - questionId
+      security: []
+  /api/leaderboard/results:
+    get:
+      summary: ''
+      operationId: getApiLeaderboardResults
+      description: ''
+      parameters: []
+      responses:
+        404:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  error: 'Game not found'
+                properties:
+                  error:
+                    type: string
+                    example: 'Game not found'
+      tags:
+        - Endpoints
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                roomCode:
+                  type: string
+                  description: 'Must be 6 characters.'
+                  example: bngzmi
+                  nullable: false
+              required:
+                - roomCode
       security: []
   /api/quizzes:
+    get:
+      summary: 'Display a listing of the resource.'
+      operationId: displayAListingOfTheResource
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                example:
+                  -
+                    id: 1
+                    user_id: 1
+                    title: dsdssd
+                    description: dsdsdsds
+                    category: ''
+                    img_url: quiz_images/A99yAyK0pXJRDLknIPKA1vqsj0ORBFpe3EeJna8l.jpg
+                    show_correct_answer: true
+                    is_public: true
+                    created_at: '2025-03-10T15:10:38.000000Z'
+                    updated_at: '2025-03-10T15:10:38.000000Z'
+                    created_by: lew
+                    user:
+                      id: 1
+                      name: lew
+                  -
+                    id: 3
+                    user_id: 11
+                    title: 'IMAGE ARRAY TEST'
+                    description: udsuidsiudsiu
+                    category: ''
+                    img_url: ''
+                    show_correct_answer: true
+                    is_public: true
+                    created_at: '2025-03-11T12:12:39.000000Z'
+                    updated_at: '2025-03-11T12:12:39.000000Z'
+                    created_by: CRAB_GAMING
+                    user:
+                      id: 11
+                      name: CRAB_GAMING
+                  -
+                    id: 4
+                    user_id: 11
+                    title: test5
+                    description: rereerer
+                    category: ''
+                    img_url: quiz_images/rXs7pBO1LQMFkhf9WKLsNNHmdbZZSXRM2dM9wtRC.jpg
+                    show_correct_answer: true
+                    is_public: true
+                    created_at: '2025-03-11T12:18:32.000000Z'
+                    updated_at: '2025-03-11T12:18:32.000000Z'
+                    created_by: CRAB_GAMING
+                    user:
+                      id: 11
+                      name: CRAB_GAMING
+                  -
+                    id: 10
+                    user_id: 11
+                    title: '7675555556'
+                    description: '767667'
+                    category: ''
+                    img_url: ''
+                    show_correct_answer: true
+                    is_public: true
+                    created_at: '2025-03-11T12:47:41.000000Z'
+                    updated_at: '2025-03-11T12:47:41.000000Z'
+                    created_by: CRAB_GAMING
+                    user:
+                      id: 11
+                      name: CRAB_GAMING
+                  -
+                    id: 13
+                    user_id: 11
+                    title: asdfg
+                    description: asdf
+                    category: ''
+                    img_url: quiz_images/7rlbyTPFMRlHneCUq6AK5YC7CCidJnBgg16hYHXZ.jpg
+                    show_correct_answer: true
+                    is_public: true
+                    created_at: '2025-03-11T13:03:03.000000Z'
+                    updated_at: '2025-03-11T13:03:03.000000Z'
+                    created_by: CRAB_GAMING
+                    user:
+                      id: 11
+                      name: CRAB_GAMING
+                  -
+                    id: 14
+                    user_id: 11
+                    title: efrfrrfrf
+                    description: rererere
+                    category: ''
+                    img_url: quiz_images/PgRKSoj01lm2bmxk8s4GOr5jKcx5VCIF63IPN2HH.jpg
+                    show_correct_answer: true
+                    is_public: true
+                    created_at: '2025-03-11T13:18:32.000000Z'
+                    updated_at: '2025-03-11T13:18:32.000000Z'
+                    created_by: CRAB_GAMING
+                    user:
+                      id: 11
+                      name: CRAB_GAMING
+                  -
+                    id: 15
+                    user_id: 12
+                    title: jjj
+                    description: jjj
+                    category: ''
+                    img_url: ''
+                    show_correct_answer: true
+                    is_public: true
+                    created_at: '2025-03-11T13:44:36.000000Z'
+                    updated_at: '2025-03-11T13:44:36.000000Z'
+                    created_by: joining
+                    user:
+                      id: 12
+                      name: joining
+                  -
+                    id: 18
+                    user_id: 16
+                    title: 'TEST HEREEEEEEE'
+                    description: uygsuayasguyyug
+                    category: Sports
+                    img_url: quiz_images/iF31AdfTX4BqW9i0L7gWYkjQf9L1MVDVZZLulWDQ.jpg
+                    show_correct_answer: true
+                    is_public: true
+                    created_at: '2025-03-19T14:27:31.000000Z'
+                    updated_at: '2025-03-19T14:27:31.000000Z'
+                    created_by: lew5
+                    user:
+                      id: 16
+                      name: lew5
+                  -
+                    id: 19
+                    user_id: 20
+                    title: 'Showcase Quiz'
+                    description: 'showcase quiz'
+                    category: Sports
+                    img_url: quiz_images/WKaYYNlUp1IsbxmqyMwkzFfIVWp19849r8V9c0T2.jpg
+                    show_correct_answer: true
+                    is_public: true
+                    created_at: '2025-03-19T17:32:27.000000Z'
+                    updated_at: '2025-03-19T17:32:27.000000Z'
+                    created_by: crabImageMan
+                    user:
+                      id: 20
+                      name: crabImageMan
+                  -
+                    id: 20
+                    user_id: 16
+                    title: ggfgfgffg
+                    description: gfgfgfg
+                    category: History
+                    img_url: 'https://images.pexels.com/photos/459124/pexels-photo-459124.jpeg?auto=compress&cs=tinysrgb&h=650&w=940'
+                    show_correct_answer: true
+                    is_public: true
+                    created_at: '2025-03-24T10:13:53.000000Z'
+                    updated_at: '2025-03-24T10:13:53.000000Z'
+                    created_by: lew5
+                    user:
+                      id: 16
+                      name: lew5
+                  -
+                    id: 21
+                    user_id: 16
+                    title: dsdsds
+                    description: dsdsdsd
+                    category: Geography
+                    img_url: 'https://images.pexels.com/photos/53114/horse-arabs-stallion-ride-53114.jpeg?auto=compress&cs=tinysrgb&h=650&w=940'
+                    show_correct_answer: true
+                    is_public: true
+                    created_at: '2025-03-24T10:20:42.000000Z'
+                    updated_at: '2025-03-24T10:20:42.000000Z'
+                    created_by: lew5
+                    user:
+                      id: 16
+                      name: lew5
+                  -
+                    id: 22
+                    user_id: 16
+                    title: 'ONE FOR SHOWCASE'
+                    description: 'blah blah'
+                    category: Geography
+                    img_url: 'https://images.pexels.com/photos/1098515/pexels-photo-1098515.jpeg?auto=compress&cs=tinysrgb&h=650&w=940'
+                    show_correct_answer: true
+                    is_public: true
+                    created_at: '2025-03-24T10:58:40.000000Z'
+                    updated_at: '2025-03-24T10:58:40.000000Z'
+                    created_by: lew5
+                    user:
+                      id: 16
+                      name: lew5
+                  -
+                    id: 23
+                    user_id: 16
+                    title: ddssd
+                    description: sdsdsd
+                    category: Geography
+                    img_url: ''
+                    show_correct_answer: true
+                    is_public: true
+                    created_at: '2025-03-24T16:42:25.000000Z'
+                    updated_at: '2025-03-24T16:42:25.000000Z'
+                    created_by: lew5
+                    user:
+                      id: 16
+                      name: lew5
+      tags:
+        - Endpoints
+      security: []
     post:
       summary: 'Store a newly created resource in storage.'
       operationId: storeANewlyCreatedResourceInStorage
@@ -141,102 +596,104 @@ paths:
       tags:
         - Endpoints
       requestBody:
-        required: true
+        required: false
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
-                title:
+                image:
                   type: string
-                  description: 'Must not be greater than 255 characters.'
-                  example: b
-                  nullable: false
-                description:
-                  type: string
-                  description: ''
-                  example: 'Eius et animi quos velit et.'
+                  format: binary
+                  description: 'Must be an image. Must not be greater than 2048 kilobytes.'
                   nullable: true
-                category:
-                  type: string
-                  description: 'Must not be greater than 255 characters.'
-                  example: v
-                  nullable: true
-                img_url:
-                  type: string
-                  description: 'Must not be greater than 2048 characters.'
-                  example: 'http://www.dach.com/mollitia-modi-deserunt-aut-ab-provident-perspiciatis-quo.html'
-                  nullable: true
-                show_correct_answer:
-                  type: boolean
-                  description: ''
-                  example: true
-                  nullable: false
-                is_public:
-                  type: boolean
-                  description: ''
-                  example: true
-                  nullable: false
-                questions:
+                question_images:
                   type: array
-                  description: 'Add this line.'
-                  example: null
+                  description: 'Must be an image. Must not be greater than 2048 kilobytes.'
                   items:
-                    type: object
-                    properties:
-                      question_text:
-                        type: string
-                        description: 'This field is required when <code>questions</code> is present.'
-                        example: architecto
-                        nullable: false
-                      question_type:
-                        type: string
-                        description: 'This field is required when <code>questions</code> is present.'
-                        example: 'single choice'
-                        nullable: false
-                        enum:
-                          - 'single choice'
-                          - 'multiple choice'
-                      difficulty:
-                        type: string
-                        description: ''
-                        example: architecto
-                        nullable: true
-                      img_url:
-                        type: string
-                        description: ''
-                        example: 'http://www.bailey.biz/quos-velit-et-fugiat-sunt-nihil-accusantium-harum.html'
-                        nullable: true
-                      time_to_answer:
-                        type: integer
-                        description: ''
-                        example: 16
-                        nullable: true
-                      answer_options:
-                        type: array
-                        description: 'This field is required when <code>questions</code> is present. Must have at least 1 items.'
-                        example: null
-                        items:
-                          type: object
-                          properties:
-                            answer_text:
-                              type: string
-                              description: ''
-                              example: architecto
-                              nullable: false
-                            is_correct:
-                              type: boolean
-                              description: ''
-                              example: false
-                              nullable: false
-                          required:
-                            - answer_text
-                            - is_correct
-              required:
-                - title
+                    type: string
+                    format: binary
+                    nullable: true
       security: []
   '/api/quizzes/{id}':
-    put:
+    get:
+      summary: 'Display the specified resource.'
+      operationId: displayTheSpecifiedResource
+      description: ''
+      parameters: []
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  id: 1
+                  user_id: 1
+                  title: dsdssd
+                  description: dsdsdsds
+                  category: ''
+                  img_url: quiz_images/A99yAyK0pXJRDLknIPKA1vqsj0ORBFpe3EeJna8l.jpg
+                  show_correct_answer: true
+                  is_public: true
+                  created_at: '2025-03-10T15:10:38.000000Z'
+                  updated_at: '2025-03-10T15:10:38.000000Z'
+                  created_by: lew
+                  user:
+                    id: 1
+                    name: lew
+                  questions: []
+                properties:
+                  id:
+                    type: integer
+                    example: 1
+                  user_id:
+                    type: integer
+                    example: 1
+                  title:
+                    type: string
+                    example: dsdssd
+                  description:
+                    type: string
+                    example: dsdsdsds
+                  category:
+                    type: string
+                    example: ''
+                  img_url:
+                    type: string
+                    example: quiz_images/A99yAyK0pXJRDLknIPKA1vqsj0ORBFpe3EeJna8l.jpg
+                  show_correct_answer:
+                    type: boolean
+                    example: true
+                  is_public:
+                    type: boolean
+                    example: true
+                  created_at:
+                    type: string
+                    example: '2025-03-10T15:10:38.000000Z'
+                  updated_at:
+                    type: string
+                    example: '2025-03-10T15:10:38.000000Z'
+                  created_by:
+                    type: string
+                    example: lew
+                  user:
+                    type: object
+                    properties:
+                      id:
+                        type: integer
+                        example: 1
+                      name:
+                        type: string
+                        example: lew
+                  questions:
+                    type: array
+                    example: []
+      tags:
+        - Endpoints
+      security: []
+    post:
       summary: 'Update the specified resource in storage.'
       operationId: updateTheSpecifiedResourceInStorage
       description: ''
@@ -245,44 +702,24 @@ paths:
       tags:
         - Endpoints
       requestBody:
-        required: true
+        required: false
         content:
-          application/json:
+          multipart/form-data:
             schema:
               type: object
               properties:
-                title:
+                image:
                   type: string
-                  description: 'Must not be greater than 255 characters.'
-                  example: b
-                  nullable: false
-                description:
-                  type: string
-                  description: ''
-                  example: 'Eius et animi quos velit et.'
+                  format: binary
+                  description: 'Must be an image. Must not be greater than 2048 kilobytes.'
                   nullable: true
-                category:
-                  type: string
-                  description: 'Must not be greater than 255 characters.'
-                  example: v
-                  nullable: true
-                img_url:
-                  type: string
-                  description: 'Must not be greater than 2048 characters.'
-                  example: 'http://www.dach.com/mollitia-modi-deserunt-aut-ab-provident-perspiciatis-quo.html'
-                  nullable: true
-                show_correct_answer:
-                  type: boolean
-                  description: ''
-                  example: true
-                  nullable: false
-                is_public:
-                  type: boolean
-                  description: ''
-                  example: false
-                  nullable: false
-              required:
-                - title
+                question_images:
+                  type: array
+                  description: 'Must be an image. Must not be greater than 2048 kilobytes.'
+                  items:
+                    type: string
+                    format: binary
+                    nullable: true
       security: []
     delete:
       summary: 'Remove the specified resource from storage.'
@@ -298,11 +735,42 @@ paths:
         in: path
         name: id
         description: 'The ID of the quiz.'
-        example: architecto
+        example: 1
         required: true
         schema:
-          type: string
+          type: integer
+  /api/logout:
+    post:
+      summary: 'Log out a user by revoking their authentication token'
+      operationId: logOutAUserByRevokingTheirAuthenticationToken
+      description: ''
+      parameters: []
+      responses: {  }
+      tags:
+        - Endpoints
+      security: []
   /api/questions:
+    get:
+      summary: 'Display a listing of the questions.'
+      operationId: displayAListingOfTheQuestions
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
     post:
       summary: 'Store a newly created question in the database.'
       operationId: storeANewlyCreatedQuestionInTheDatabase
@@ -379,6 +847,27 @@ paths:
                 - answer_options
       security: []
   '/api/questions/{id}':
+    get:
+      summary: 'Display the specified question.'
+      operationId: displayTheSpecifiedQuestion
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
     put:
       summary: 'Update the specified question in the database.'
       operationId: updateTheSpecifiedQuestionInTheDatabase
@@ -448,7 +937,7 @@ paths:
                       is_correct:
                         type: boolean
                         description: ''
-                        example: false
+                        example: true
                         nullable: false
                     required:
                       - answer_text
@@ -473,7 +962,7 @@ paths:
         in: path
         name: id
         description: 'The ID of the question.'
-        example: 16
+        example: 1
         required: true
         schema:
           type: integer
@@ -568,3 +1057,56 @@ paths:
         required: true
         schema:
           type: integer
+  /api/leaderboard:
+    get:
+      summary: ''
+      operationId: getApiLeaderboard
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+  '/api/user-rank/{user_id}':
+    get:
+      summary: ''
+      operationId: getApiUserRankUser_id
+      description: ''
+      parameters: []
+      responses:
+        401:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  message: Unauthenticated.
+                properties:
+                  message:
+                    type: string
+                    example: Unauthenticated.
+      tags:
+        - Endpoints
+      security: []
+    parameters:
+      -
+        in: path
+        name: user_id
+        description: 'The ID of the user.'
+        example: architecto
+        required: true
+        schema:
+          type: string
