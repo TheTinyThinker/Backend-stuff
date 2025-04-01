@@ -19,7 +19,8 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:5173', 'https://faywooquizzes.web.app')],
+    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:5173'),'https://faywooquizzes.web.app'
+],
 
     'allowed_origins_patterns' => [],
 
