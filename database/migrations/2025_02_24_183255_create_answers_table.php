@@ -22,7 +22,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
         });
 
-        // Then check if questions table exists before adding constraint
+        // Then check if questions table exists before adding constrain
         if (Schema::hasTable('questions')) {
             Schema::table('answers', function (Blueprint $table) {
                 $table->foreign('question_id')
