@@ -122,3 +122,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('user-rank/{user_id}', [LeaderboardController::class, 'userRank']);
 });
 
+
+Route::middleware('api')->group(function () {
+    // Your API endpoints here
+    Route::get('/data', [YourController::class, 'getData']);
+
+    // Protected routes
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/protected-data', [YourController::class, 'getProtectedData']);
+    });
+});
