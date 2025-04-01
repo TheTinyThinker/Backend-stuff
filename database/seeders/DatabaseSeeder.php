@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
             // Create users
             $users = User::factory(10)->create();
 
-            // Ensure at least two users exist before creating friendships
+            // Ensure at least two users exist  before creating friendships
             if ($users->count() > 1) {
                 foreach ($users as $user) {
                     $friend = $users->where('id', '!=', $user->id)->random();
