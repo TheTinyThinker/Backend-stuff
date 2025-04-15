@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
 
             $testUser = User::create([
                 'name' => 'Test User',
-                'email' => 'user@faywoo.com',
+                'email' => 'FayWooUser@faywoo.com',
                 'password' => Hash::make('password123'),
             ]);
 
