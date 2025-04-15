@@ -137,6 +137,12 @@ class User extends Authenticatable
         );
     }
 
+    public function friendships()
+{
+    return $this->hasMany(Friendship::class, 'user_id')
+        ->orWhere('friend_id', $this->id);
+}
+
     /**
      * Get user's leaderboard entries.
      */
@@ -196,6 +202,16 @@ public function getCorrectAnswersAttribute()
     public function leaderboards()
     {
         return $this->hasMany(Leaderboard::class);
+    }
+
+    public function roles()
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function hasRole($roleName)
+    {
+        return $this->roles()->where('name', $roleName)->exists();
     }
 
 }

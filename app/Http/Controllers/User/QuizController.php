@@ -1,54 +1,70 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\User;
 
+use App\Http\Controllers\Controller;
 use App\Models\Quiz;
 use App\Models\Question;
 use App\Models\Answer;
-use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class QuizController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display a listing of user's quizzes.
+     *
+     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Initialize the query builder first
-        $query = Quiz::with('user:id,name');  // Don't call get() yet!
+        $userId = Auth::id();
+        $query = Quiz::where('user_id', $userId);
 
-        // Filter based on authentication status
-        if (!Auth::check()) {
-            // Only show public quizzes to guests
-            $query->where('is_public', true);
-        } else {
-            // Show public quizzes or private quizzes owned by the current user
-            $query->where(function ($q) {
-                $q->where('is_public', true)
-                    ->orWhere('user_id', Auth::id());
+        // Apply filters
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
             });
         }
 
-        // Execute the query after applying all filters
+        if ($request->has('category')) {
+            $query->where('category', $request->category);
+        }
+
+        if ($request->has('is_public')) {
+            $query->where('is_public', $request->boolean('is_public'));
+        }
+
+        // Sorting
+        $sortField = $request->sort_by ?? 'created_at';
+        $sortDirection = $request->sort_direction ?? 'desc';
+        $allowedSortFields = ['title', 'created_at', 'average_rating', 'rating_count'];
+
+        if (in_array($sortField, $allowedSortFields)) {
+            $query->orderBy($sortField, $sortDirection);
+        }
+
         $quizzes = $query->get();
 
-        // Format the response to include creator's name more clearly
+        // Format the response to include creator's name
         $formattedQuizzes = $quizzes->map(function ($quiz) {
             $quiz->created_by = $quiz->user ? $quiz->user->name : 'Unknown';
             return $quiz;
         });
 
-        // Return a response with the list of quizzes including user data
         return response()->json($formattedQuizzes);
     }
 
     /**
-     * Store a newly created resource in storage.
+     * Store a newly created quiz.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
@@ -71,8 +87,6 @@ class QuizController extends Controller
             'questions.*.answer_options' => 'required_with:questions|array|min:1',
             'questions.*.answer_options.*.answer_text' => 'required|string',
             'questions.*.answer_options.*.is_correct' => 'required|boolean',
-            'is_public' => 'boolean',
-            'img_url' => 'nullable',
         ])->validate();
 
         $request->validate([
@@ -80,16 +94,14 @@ class QuizController extends Controller
             'question_images.*' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-
         try {
             DB::beginTransaction();
 
-            // Set default for show_correct_answer if not provided
+            // Set default values
             if (!isset($validatedData['show_correct_answer'])) {
                 $validatedData['show_correct_answer'] = false;
             }
 
-            // Set default for is_public if not provided
             if (!isset($validatedData['is_public'])) {
                 $validatedData['is_public'] = true;
             }
@@ -97,27 +109,25 @@ class QuizController extends Controller
             // Set user_id to authenticated user
             $validatedData['user_id'] = Auth::id();
 
+            // Handle quiz image
             if ($request->hasFile('image')) {
                 $path = $request->file('image')->store('/quiz_images');
-
-                \Log::info('Stored file path:', ['path' => $path]);
-
                 $validatedData['img_url'] = $path;
             }
 
-            // Create a new quiz using validated data
+            // Create a new quiz
             $quiz = Quiz::create($validatedData);
 
             // Create questions if provided
             if (isset($validatedData['questions']) && is_array($validatedData['questions'])) {
                 foreach ($validatedData['questions'] as $index => $questionData) {
-                    // Create the question
-
+                    // Handle question image
                     if ($request->hasFile("question_images.$index")) {
                         $questionImagePath = $request->file("question_images.$index")->store("/question_images");
                         $questionData['img_url'] = $questionImagePath;
                     }
 
+                    // Create question
                     $question = $quiz->questions()->create([
                         'question_text' => $questionData['question_text'],
                         'question_type' => $questionData['question_type'],
@@ -126,26 +136,21 @@ class QuizController extends Controller
                         'time_to_answer' => $questionData['time_to_answer'] ?? 30,
                     ]);
 
-                    // Create answer options for this question
+                    // Create answers
                     if (isset($questionData['answer_options'])) {
                         foreach ($questionData['answer_options'] as $answerData) {
                             $question->answers()->create([
                                 'answer_text' => $answerData['answer_text'],
                                 'is_correct' => $answerData['is_correct'],
-                                'user_id' => Auth::id(), // user id fix
+                                'user_id' => Auth::id(),
                             ]);
                         }
                     }
                 }
             }
-            // // Set default for is_public if not provided
-            // if (!isset($validatedData['is_public'])) {
-            //     $validatedData['is_public'] = true;
-            // }
 
             DB::commit();
 
-            // Return the created quiz with questions and answers
             return response()->json(
                 $quiz->load(['questions.answers']),
                 201
@@ -157,112 +162,45 @@ class QuizController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * Display the specified quiz.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function show(string $id)
+    public function show($id)
     {
-        // Start with a base query
-        $query = Quiz::with(['user:id,name', 'questions.answers']);
+        $userId = Auth::id();
 
-        // Apply privacy filter
-        if (!Auth::check()) {
-            // For guests: only show public quizzes
-            $query->where('is_public', true);
-        } else {
-            // For logged-in users: show public quizzes OR their own private quizzes
-            $query->where(function($q) {
-                $q->where('is_public', true)
-                  ->orWhere('user_id', Auth::id());
-            });
-        }
+        $quiz = Quiz::where('id', $id)
+            ->where('user_id', $userId)
+            ->with(['questions.answers'])
+            ->firstOrFail();
 
-        // Now try to find the quiz with these restrictions
-        $quiz = $query->find($id);
-
-        // If quiz doesn't exist OR user doesn't have permission to see it
-        if (!$quiz) {
-            return response()->json(['message' => 'Quiz not found'], 404);
-        }
-
-        // User has access, so continue...
         $quiz->created_by = $quiz->user ? $quiz->user->name : 'Unknown';
         $quiz->stats = [
-            'play_count' => $quiz->play_count,
-            'correct_answer_percentage' => round($quiz->correct_answer_percentage, 1) . '%',
-            'average_rating' => round($quiz->average_rating, 1),
-            'rating_count' => $quiz->rating_count
+            'play_count' => $quiz->play_count ?? 0,
+            'correct_answer_percentage' => round($quiz->correct_answer_percentage ?? 0, 1) . '%',
+            'average_rating' => round($quiz->average_rating ?? 0, 1),
+            'rating_count' => $quiz->rating_count ?? 0
         ];
 
         return response()->json($quiz);
     }
 
-    public function publicQuizzes()
-    {
-        $query = Quiz::with(['user:id,name'])
-            ->where('is_public', true);
-
-        $quizzes = $query->get();
-
-        $formattedQuizzes = $quizzes->map(function ($quiz) {
-            $quiz->created_by = $quiz->user ? $quiz->user->name : 'Unknown';
-            return $quiz;
-        });
-        return response()->json($formattedQuizzes);
-
-    }
-
-    public function privateQuizzes(){
-
-        if(!Auth::check()){
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-
-        $query = Quiz::with(['user:id,name'])
-            ->where('is_public', false)
-            ->where('user_id', Auth::id());
-
-        $quizzes = $query->get();
-
-
-        $formattedQuizzes = $quizzes->map(function ($quiz) {
-            $quiz->created_by = $quiz->user ? $quiz->user->name : 'Unknown';
-            return $quiz;
-        });
-        return response()->json($formattedQuizzes);
-    }
-
-    public function getUsersQuizzes($userId)
-    {
-        // Verify user exists
-        $user = User::findOrFail($userId);
-
-        // Get all quizzes by this user (both public and private)
-        $query = Quiz::with(['user:id,name'])
-            ->where('user_id', $userId);
-
-        // Optional: Add permission check for private quizzes
-        if (Auth::id() != $userId) {
-            // If viewing someone else's quizzes, only show public ones
-            $query->where('is_public', true);
-        }
-
-        $quizzes = $query->get();
-
-        $formattedQuizzes = $quizzes->map(function ($quiz) {
-            $quiz->created_by = $quiz->user ? $quiz->user->name : 'Unknown';
-            $quiz->is_owner = Auth::id() == $quiz->user_id;
-            return $quiz;
-        });
-
-        return response()->json($formattedQuizzes);
-    }
-
     /**
-     * Update the specified resource in storage.
+     * Update the specified quiz.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, $id)
     {
-        $quiz = Quiz::findOrFail($id);
+        // Find quiz and verify ownership
+        $userId = Auth::id();
+        $quiz = Quiz::where('id', $id)
+            ->where('user_id', $userId)
+            ->firstOrFail();
 
         // Decode JSON payload
         $quizData = json_decode($request->quiz, true);
@@ -311,12 +249,11 @@ class QuizController extends Controller
                 // Collect IDs of incoming questions
                 $incomingQuestionIds = collect($validatedData['questions'])->pluck('id')->filter();
 
-                // Find questions that need to be deleted (i.e., those not in the incoming request)
+                // Find questions that need to be deleted
                 $questionsToDelete = $quiz->questions()->whereNotIn('id', $incomingQuestionIds)->get();
 
                 // Delete those questions
                 foreach ($questionsToDelete as $question) {
-                    // Optionally, delete question images from storage before deleting the question
                     if ($question->img_url) {
                         Storage::delete($question->img_url);
                     }
@@ -350,8 +287,6 @@ class QuizController extends Controller
                     if (isset($questionData['answer_options'])) {
                         $question->answers()->delete(); // Remove old answers
                         foreach ($questionData['answer_options'] as $answerData) {
-                            $userId = Auth::id() ?: $quiz->user_id; // Fallback to quiz creator if auth fails
-
                             $question->answers()->create([
                                 'answer_text' => $answerData['answer_text'],
                                 'is_correct' => $answerData['is_correct'],
@@ -372,119 +307,49 @@ class QuizController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Remove the specified quiz.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        // Find the quiz by its ID
-        $quiz = Quiz::findOrFail($id);
-
-        // Check if user is authorized to delete this quiz
-        if (Auth::id() != $quiz->user_id) {
-            return response()->json(['message' => 'You are not authorized to delete this quiz'], 403);
-        }
-
-        // Delete the quiz
-        $quiz->delete();
-
-        // Return a response indicating that the quiz was deleted
-        return response()->json(['message' => 'Quiz deleted successfully']);
-    }
-
-    public function rateQuiz(Request $request, $id)
-    {
-        // Make sure user is authenticated
-
-        if (!Auth::check()) {
-            return response()->json(['message' => 'You must be logged in to rate quizzes'], 401);
-        }
-
-        $request->validate([
-            'rating' => 'required|integer|min:1|max:5',
-            'user_id' => 'required|integer'
-        ]);
-
-        $quiz = Quiz::findOrFail($id);
-
         $userId = Auth::id();
-        $rating = $request->rating;
+
+        $quiz = Quiz::where('id', $id)
+            ->where('user_id', $userId)
+            ->firstOrFail();
 
         try {
             DB::beginTransaction();
 
-            // Check if this is a new rating BEFORE inserting
-            $userRatedBefore = DB::table('quiz_ratings')
-                ->where('user_id', $userId)
-                ->where('quiz_id', $id)
-                ->exists();
-
-            // Get old user rating if it exists
-            $oldUserRating = 0;
-            if ($userRatedBefore) {
-                $oldUserRating = DB::table('quiz_ratings')
-                    ->where('user_id', $userId)
-                    ->where('quiz_id', $id)
-                    ->value('rating');
+            // Delete quiz and all related files/data
+            if ($quiz->img_url) {
+                Storage::delete($quiz->img_url);
             }
 
-            // Store rating with proper timestamps
-            DB::table('quiz_ratings')->updateOrInsert(
-                ['user_id' => $userId, 'quiz_id' => $id],
-                [
-                    'rating' => $rating,
-                    'updated_at' => now(),
-                ]
-            );
-
-            // Calculate new rating safely
-            $oldRating = $quiz->average_rating ?? 0;
-            $oldCount = $quiz->rating_count ?? 0;
-
-
-            if (!$userRatedBefore) {
-                // For new ratings, increment counter directly in database
-                DB::table('quizzes')
-                    ->where('id', $id)
-                    ->increment('rating_count');
-
-                $newCount = $oldCount + 1;
-                $newRating = (($oldRating * $oldCount) + $rating) / $newCount;
-            } else {
-                // Keep count the same for rating updates
-                $newRating = (($oldRating * $oldCount) - $oldUserRating + $rating) / $oldCount;
+            // Delete question images
+            foreach ($quiz->questions as $question) {
+                if ($question->img_url) {
+                    Storage::delete($question->img_url);
+                }
+                $question->delete();
             }
 
-            // Update average rating directly
-            DB::table('quizzes')
-                ->where('id', $id)
-                ->update(['average_rating' => $newRating]);
+            // Delete the quiz
+            $quiz->delete();
 
             DB::commit();
-
-
-
-            // Update average rating directly
-            DB::table('quizzes')
-                ->where('id', $id)
-                ->update(['average_rating' => $newRating, 'rating_count' => $newCount]);
-            DB::commit();
-
 
             return response()->json([
-                'message' => 'Rating submitted successfully',
-                'new_rating' => round($newRating, 1),
-                'rating_count' => $userRatedBefore ? $oldCount : $oldCount + 1
+                'message' => 'Quiz deleted successfully'
             ]);
 
         } catch (\Exception $e) {
             DB::rollBack();
-
             return response()->json([
-                'message' => 'Failed to submit rating: ' . $e->getMessage(),
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'message' => 'Failed to delete quiz: ' . $e->getMessage()
             ], 500);
         }
     }
-
 }

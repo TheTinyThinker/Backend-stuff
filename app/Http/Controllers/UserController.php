@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -41,30 +42,48 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // Check if the authenticated user is updating their own profile
-        if (Auth::id() != $id) {
-            return response()->json(['message' => 'Unauthorized'], 403);
-        }
-
         // Validate input
         $validatedData = $request->validate([
             'name' => 'sometimes|required|string|max:255',
             'email' => 'sometimes|required|email|unique:users,email,' . $id,
             'password' => 'sometimes|required|min:6|confirmed',
+            'profile_picture' => 'nullable|string|max:2048',
+            'new_profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240'
         ]);
-
-        // Find user
+    
         $user = User::findOrFail($id);
-
-        // Update user details
-        if (isset($validatedData['password'])) {
-            $validatedData['password'] = bcrypt($validatedData['password']);
+    
+        // Update password if provided
+        if (!empty($validatedData['password'])) {
+            $validatedData['password'] = Hash::make($validatedData['password']);
         }
+    
+        try {
 
-        $user->update($validatedData);
+            // Handle profile picture upload
+            if ($request->hasFile('new_profile_picture')) {
 
-        return response()->json(['message' => 'User updated successfully', 'user' => $user]);
+                if ($user->profile_picture) {
+                    Storage::disk('public')->delete($user->profile_picture);
+                }
+
+                $filePath = $request->file('new_profile_picture')->store('profile_pictures', 'public');
+                $validatedData['profile_picture'] = $filePath;
+            }
+    
+            $user->update($validatedData);
+    
+            return response()->json([
+                'message' => 'User updated successfully',
+                'user' => $user,
+                'profile_picture' => $user->profile_picture ? asset('storage/' . $user->profile_picture) : null
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
+        }
     }
+    
+
 
     /**
      * Remove the specified user from storage.

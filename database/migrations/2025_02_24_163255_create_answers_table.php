@@ -11,27 +11,17 @@ return new class extends Migration
      */
     public function up()
     {
-        // Create the table without foreign keys first
         Schema::create('answers', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('question_id');
+            $table->foreignId('question_id')->constrained()->onDelete('cascade');
             $table->text('answer_text');
             $table->boolean('is_correct')->default(false);
             $table->timestamps();
             $table->integer('points')->default(1);
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
         });
-
-        // Then check if questions table exists before adding constraint
-        if (Schema::hasTable('questions')) {
-            Schema::table('answers', function (Blueprint $table) {
-                $table->foreign('question_id')
-                      ->references('id')
-                      ->on('questions')
-                      ->onDelete('cascade');
-            });
-        }
     }
+
 
     /**
      * Reverse the migrations.

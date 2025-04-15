@@ -10,20 +10,20 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class RoomStatusChanged implements ShouldBroadcast
+class SuggestStatusChanged implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $roomCode;
-    public $isOpen;
+    public $canSuggest;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($roomCode, $isOpen)
+    public function __construct($roomCode, $canSuggest)
     {
         $this->roomCode = $roomCode;
-        $this->isOpen = $isOpen;
+        $this->canSuggest = $canSuggest;
     }
 
     public function broadcastOn()
@@ -33,14 +33,14 @@ class RoomStatusChanged implements ShouldBroadcast
 
     public function broadcastAs()
     {
-        return "RoomStatusChanged";
+        return "SuggestStatusChanged";
     }
 
     public function broadcastWith()
     {
         return [
             'roomCode' => $this->roomCode,
-            'isOpen' => $this->isOpen,
+            'canSuggest' => $this->canSuggest,
         ];
     }
 }

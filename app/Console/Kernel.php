@@ -12,4 +12,9 @@ class Kernel extends ConsoleKernel
         // Run daily at midnight
         $schedule->command('stats:recalculate --all')->daily();
     }
+
+    protected $routeMiddleware = [
+        // Other middleware...
+        'role' => \App\Http\Middleware\CheckRole::class,
+    ];
 }

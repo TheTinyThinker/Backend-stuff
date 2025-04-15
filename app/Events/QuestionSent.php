@@ -20,11 +20,12 @@ class QuestionSent implements ShouldBroadcast
     public $totalQuestions;
     public $previousQuestionAnswers;
     public $previousQuestionResults;
+    public $leaderboard;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($roomCode, $question, $questionNumber, $totalQuestions, $previousQuestionAnswers=null, $previousQuestionResults=null)
+    public function __construct($roomCode, $question, $questionNumber, $totalQuestions, $previousQuestionAnswers=null, $previousQuestionResults=null, $leaderboard=null)
     {
         $this->roomCode = $roomCode;
         $this->question = $question;
@@ -32,6 +33,7 @@ class QuestionSent implements ShouldBroadcast
         $this->totalQuestions = $totalQuestions;
         $this->previousQuestionAnswers = $previousQuestionAnswers;
         $this->previousQuestionResults = $previousQuestionResults;
+        $this->leaderboard = $leaderboard;
     }
 
     /**
@@ -57,6 +59,7 @@ class QuestionSent implements ShouldBroadcast
             'totalQuestions' => $this->totalQuestions,
             'previousQuestionAnswers' => $this->previousQuestionAnswers,
             'previousQuestionResults' => $this->previousQuestionResults,
+            'liveLeaderboard' => $this->leaderboard,
         ];
     }
 }

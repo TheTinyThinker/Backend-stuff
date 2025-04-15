@@ -46,4 +46,10 @@ class Quiz extends Model
     public function getImageUrlAttribute() {
         return $this->image ? Storage::url($this->image) : null;
     }
+
+    public function ratings()
+{
+    return $this->hasMany(QuizRating::class);
+}
+
 }

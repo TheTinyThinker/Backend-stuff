@@ -74,6 +74,7 @@ class GameController extends Controller
 
             //here this is cos joining mid game is a mess and we need to put an end to it
             $roomData['isGameStarted'] = true;
+            $roomData['suggestedQuizzes'] = [];
             // Save updated room data
             $roomData['gameState'] = $gameState;
             Cache::put("room:$roomCode", $roomData, now()->addHours(2));
@@ -238,7 +239,9 @@ class GameController extends Controller
 
                     // In a real application, you might want to use a job queue for this delay
                     // For now, we'll just broadcast immediately
-                    event(new QuestionSent($roomCode, $nextQuestion, $nextIndex + 1, count($gameState['questions']), $currentQuestion['answers'], $questionResults));
+                    $leaderboard = $this->calculateLeaderboard($roomData, $gameState);
+
+                    event(new QuestionSent($roomCode, $nextQuestion, $nextIndex + 1, count($gameState['questions']), $currentQuestion['answers'], $questionResults, $leaderboard));
                 } else {
                     // End the quiz
                     $gameState['status'] = 'ended';
