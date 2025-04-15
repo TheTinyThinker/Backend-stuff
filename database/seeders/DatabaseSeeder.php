@@ -129,8 +129,12 @@ class DatabaseSeeder extends Seeder
                     $totalCorrectAnswers = Leaderboard::where('user_id', $user->id)->sum('correct_answers');
                 }
 
-                $incorrectAnswers = Leaderboard::where('user_id', $user->id)->sum('incorrect_answers') ?? 0;
-                $totalAnswers = $totalCorrectAnswers + $incorrectAnswers;
+                $totalIncorrectAnswers = 0; // Default value
+                if (Schema::hasColumn('leaderboards', 'incorrect_answers')) {
+                    $totalIncorrectAnswers = Leaderboard::where('user_id', $user->id)->sum('incorrect_answers');
+                }
+
+                $totalAnswers = $totalCorrectAnswers + $totalIncorrectAnswers;
 
                 // Calculate correct percentage
                 $correctPercentage = $totalAnswers > 0
@@ -152,7 +156,7 @@ class DatabaseSeeder extends Seeder
                 $user->update([
                     'total_score' => Leaderboard::where('user_id', $user->id)->sum('points'),
                     'correct_answers' => $totalCorrectAnswers,
-                    'incorrect_answers' => $incorrectAnswers,
+                    'incorrect_answers' => $totalIncorrectAnswers,
                     'correct_percentage' => $correctPercentage,
                     'total_questions_answered' => $totalAnswers,
                     'total_quizzes_attempted' => $quizzesAttempted,
