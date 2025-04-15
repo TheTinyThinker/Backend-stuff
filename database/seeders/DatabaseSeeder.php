@@ -11,6 +11,7 @@ use App\Models\Leaderboard;
 use App\Models\Friendship;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder
 {
@@ -121,13 +122,19 @@ class DatabaseSeeder extends Seeder
             // Calculate and update user statistics
             foreach ($users as $user) {
                 // Get correct and incorrect answers
-                $correctAnswers = Leaderboard::where('user_id', $user->id)->sum('correct_answers') ?? 0;
+                $totalCorrectAnswers = 0; // Default value if column doesn't exist
+
+                // Check if the column exists before trying to sum it
+                if (Schema::hasColumn('leaderboards', 'correct_answers')) {
+                    $totalCorrectAnswers = Leaderboard::where('user_id', $user->id)->sum('correct_answers');
+                }
+
                 $incorrectAnswers = Leaderboard::where('user_id', $user->id)->sum('incorrect_answers') ?? 0;
-                $totalAnswers = $correctAnswers + $incorrectAnswers;
+                $totalAnswers = $totalCorrectAnswers + $incorrectAnswers;
 
                 // Calculate correct percentage
                 $correctPercentage = $totalAnswers > 0
-                                     ? round(($correctAnswers / $totalAnswers) * 100, 1)
+                                     ? round(($totalCorrectAnswers / $totalAnswers) * 100, 1)
                                      : 0;
 
                 // Get quiz stats
@@ -144,7 +151,7 @@ class DatabaseSeeder extends Seeder
                 // Update user with calculated stats
                 $user->update([
                     'total_score' => Leaderboard::where('user_id', $user->id)->sum('points'),
-                    'correct_answers' => $correctAnswers,
+                    'correct_answers' => $totalCorrectAnswers,
                     'incorrect_answers' => $incorrectAnswers,
                     'correct_percentage' => $correctPercentage,
                     'total_questions_answered' => $totalAnswers,
