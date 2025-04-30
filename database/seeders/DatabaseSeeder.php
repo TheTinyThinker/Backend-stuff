@@ -21,18 +21,18 @@ class DatabaseSeeder extends Seeder
 
         try {
             // Create users with predefined credentials for testing
-            // $adminUser = User::create([
-            //     'name' => 'Admin User',
-            //     'email' => 'FayWooAdmin1@faywoo.com',
-            //     'password' => Hash::make('password123'),
-            //     // Removed is_admin flag
-            // ]);
+            $adminUser = User::create([
+                'name' => 'Admin User',
+                'email' => 'FayWooAdmin12@faywoo.com',
+                'password' => Hash::make('password123'),
+                // Removed is_admin flag
+            ]);
 
-            // $testUser = User::create([
-            //     'name' => 'Test User',
-            //     'email' => 'FayWooUser1@faywoo.com',
-            //     'password' => Hash::make('password123'),
-            // ]);
+            $testUser = User::create([
+                'name' => 'Test User',
+                'email' => 'FayWooUser12@faywoo.com',
+                'password' => Hash::make('password123'),
+            ]);
 
             // Create additional random users
             $users = User::factory(8)->create();
