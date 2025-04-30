@@ -190,6 +190,13 @@ class QuizController extends Controller
 
         // User has access, so continue...
         $quiz->created_by = $quiz->user ? $quiz->user->name : 'Unknown';
+        $quiz->image_url = $quiz->img_url ? url('api/images/' . $quiz->img_url) : null;
+
+        // Add image URLs for questions
+        $quiz->questions->each(function ($question) {
+            $question->image_url = $question->img_url ? url('api/images/' . $question->img_url) : null;
+        });
+
         $quiz->stats = [
             'play_count' => $quiz->play_count,
             'correct_answer_percentage' => round($quiz->correct_answer_percentage, 1) . '%',
@@ -209,6 +216,7 @@ class QuizController extends Controller
 
         $formattedQuizzes = $quizzes->map(function ($quiz) {
             $quiz->created_by = $quiz->user ? $quiz->user->name : 'Unknown';
+            $quiz->image_url = $quiz->img_url ? url('api/images/' . $quiz->img_url) : null;
             return $quiz;
         });
         return response()->json($formattedQuizzes);
@@ -230,6 +238,7 @@ class QuizController extends Controller
 
         $formattedQuizzes = $quizzes->map(function ($quiz) {
             $quiz->created_by = $quiz->user ? $quiz->user->name : 'Unknown';
+            $quiz->image_url = $quiz->img_url ? url('api/images/' . $quiz->img_url) : null;
             return $quiz;
         });
         return response()->json($formattedQuizzes);
@@ -255,6 +264,7 @@ class QuizController extends Controller
         $formattedQuizzes = $quizzes->map(function ($quiz) {
             $quiz->created_by = $quiz->user ? $quiz->user->name : 'Unknown';
             $quiz->is_owner = Auth::id() == $quiz->user_id;
+            $quiz->image_url = $quiz->img_url ? url('api/images/' . $quiz->img_url) : null;
             return $quiz;
         });
 
