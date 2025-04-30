@@ -23,14 +23,14 @@ class DatabaseSeeder extends Seeder
             // Create users with predefined credentials for testing
             $adminUser = User::create([
                 'name' => 'Admin User',
-                'email' => 'FayWooAdmin12@faywoo.com',
+                'email' => 'FayWooAdmin123@faywoo.com',
                 'password' => Hash::make('password123'),
                 // Removed is_admin flag
             ]);
 
             $testUser = User::create([
                 'name' => 'Test User',
-                'email' => 'FayWooUser12@faywoo.com',
+                'email' => 'FayWooUser123@faywoo.com',
                 'password' => Hash::make('password123'),
             ]);
 
