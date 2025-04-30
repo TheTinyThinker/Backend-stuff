@@ -62,13 +62,13 @@ return [
 
         'db-backend' => [
             'driver' => 's3',
-            'key' => env('e10d65da8456f0de88a3cb6565d30dde'),
-            'secret' => env('7ebe34ca378a54f84673d29f29421322812457c16eea820367d60f5c2d17efc3'),
-            'region' => env('auto'),
-            'bucket' => env('fls-9e94750f-14b2-4dec-befc-78f9d2d60274'),
-            'url' => env('https://fls-9e94750f-14b2-4dec-befc-78f9d2d60274.laravel.cloud'),
-            'endpoint' => env('https://367be3a2035528943240074d0096e0cd.r2.cloudflarestorage.com'),
-            'use_path_style_endpoint' => env('AWS_USE_PATH_STYLE_ENDPOINT', false),
+            'key' => 'e10d65da8456f0de88a3cb6565d30dde',
+            'secret' => '7ebe34ca378a54f84673d29f29421322812457c16eea820367d60f5c2d17efc3',
+            'region' => 'auto',
+            'bucket' => 'fls-9e94750f-14b2-4dec-befc-78f9d2d60274',
+            'url' => 'https://fls-9e94750f-14b2-4dec-befc-78f9d2d60274.laravel.cloud',
+            'endpoint' => 'https://367be3a2035528943240074d0096e0cd.r2.cloudflarestorage.com',
+            'use_path_style_endpoint' => true,
             // Or if you're using local storage:
             // 'driver' => 'local',
             // 'root' => storage_path('app/public'),
