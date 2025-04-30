@@ -152,7 +152,11 @@ class QuizController extends Controller
             );
         } catch (\Exception $e) {
             DB::rollBack();
-            return response()->json(['message' => 'Failed to create quiz: ' . $e->getMessage()], 500);
+            \Log::error('Error creating quiz: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ]);
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 
