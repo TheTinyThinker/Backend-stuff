@@ -11,15 +11,15 @@ class ImageController extends Controller
     {
         try {
             // Check if file exists
-            if (!Storage::disk('s3')->exists($path)) {
+            if (!Storage::disk('db-backend')->exists($path)) {
                 return response()->json(['message' => 'Image not found'], 404);
             }
 
-            // Get file content
-            $fileContent = Storage::disk('s3')->get($path);
+            // Get file content using Storage::get()
+            $fileContent = Storage::disk('db-backend')->get($path);
 
             // Get mime type
-            $mimeType = Storage::disk('s3')->mimeType($path);
+            $mimeType = Storage::disk('db-backend')->mimeType($path);
 
             // Return image with proper headers
             return response($fileContent)

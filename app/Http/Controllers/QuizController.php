@@ -98,7 +98,7 @@ class QuizController extends Controller
             $validatedData['user_id'] = Auth::id();
 
             if ($request->hasFile('image')) {
-                $path = $request->file('image')->store('/quiz_images');
+                $path = $request->file('image')->store('/quiz_images', 'db-backend');
 
                 \Log::info('Stored file path:', ['path' => $path]);
 
@@ -114,7 +114,7 @@ class QuizController extends Controller
                     // Create the question
 
                     if ($request->hasFile("question_images.$index")) {
-                        $questionImagePath = $request->file("question_images.$index")->store("/question_images");
+                        $questionImagePath = $request->file("question_images.$index")->store("/question_images", 'db-backend');
                         $questionData['img_url'] = $questionImagePath;
                     }
 
@@ -297,9 +297,9 @@ class QuizController extends Controller
             // Handle quiz image update
             if ($request->hasFile('image')) {
                 if ($quiz->img_url) {
-                    Storage::delete($quiz->img_url);
+                    Storage::disk('db-backend')->delete($quiz->img_url);
                 }
-                $path = $request->file('image')->store('/quiz_images');
+                $path = $request->file('image')->store('/quiz_images', 'db-backend');
                 $validatedData['img_url'] = $path;
             }
 
@@ -316,9 +316,8 @@ class QuizController extends Controller
 
                 // Delete those questions
                 foreach ($questionsToDelete as $question) {
-                    // Optionally, delete question images from storage before deleting the question
                     if ($question->img_url) {
-                        Storage::delete($question->img_url);
+                        Storage::disk('db-backend')->delete($question->img_url);
                     }
                     $question->delete();
                 }
@@ -340,9 +339,9 @@ class QuizController extends Controller
                     // Handle question images
                     if ($request->hasFile("question_images.$index")) {
                         if ($question->img_url) {
-                            Storage::delete($question->img_url);
+                            Storage::disk('db-backend')->delete($question->img_url);
                         }
-                        $questionImagePath = $request->file("question_images.$index")->store("/question_images");
+                        $questionImagePath = $request->file("question_images.$index")->store("/question_images", 'db-backend');
                         $question->update(['img_url' => $questionImagePath]);
                     }
 

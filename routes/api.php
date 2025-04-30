@@ -196,6 +196,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('users/{userId}/quizzes', [QuizController::class, 'getUsersQuizzes']);
 });
 
+Route::get('images/{path}', [ImageController::class, 'getImage'])
+    ->where('path', '.*')
+    ->name('image.show');
+
 /*
 |--------------------------------------------------------------------------
 | Guest/Public Routes
