@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\AnswerController;
