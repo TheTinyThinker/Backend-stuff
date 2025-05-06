@@ -21,7 +21,9 @@ class UserController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'profile_picture' => $user->profile_picture,
+                'profile_picture' => $user->profile_picture
+                    ? url('api/images/' . $user->profile_picture)
+                    : null,
                 'created_at' => $user->created_at,
             ],
             'stats' => [
@@ -50,29 +52,53 @@ class UserController extends Controller
             'profile_picture' => 'nullable|string|max:2048',
             'new_profile_picture' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:10240'
         ]);
-    
+
         $user = User::findOrFail($id);
-    
+
         // Update password if provided
         if (!empty($validatedData['password'])) {
             $validatedData['password'] = Hash::make($validatedData['password']);
         }
-    
+
         try {
 
             // Handle profile picture upload
             if ($request->hasFile('new_profile_picture')) {
-
+                // Delete old profile picture if it exists
                 if ($user->profile_picture) {
-                    Storage::disk('public')->delete($user->profile_picture);
+                    // Log deletion attempt for debugging
+                    \Log::info('Attempting to delete profile picture:', ['path' => $user->profile_picture]);
+
+                    // Try deleting from both potential storage locations
+                    if (Storage::disk('db-backend')->exists($user->profile_picture)) {
+                        Storage::disk('db-backend')->delete($user->profile_picture);
+                        \Log::info('Deleted profile picture from db-backend disk');
+                    } elseif (Storage::disk('public')->exists($user->profile_picture)) {
+                        Storage::disk('public')->delete($user->profile_picture);
+                        \Log::info('Deleted profile picture from public disk');
+                    } else {
+                        // Path might include 'public/' prefix
+                        $trimmedPath = str_replace('public/', '', $user->profile_picture);
+                        if (Storage::disk('public')->exists($trimmedPath)) {
+                            Storage::disk('public')->delete($trimmedPath);
+                            \Log::info('Deleted profile picture with trimmed path', ['path' => $trimmedPath]);
+                        } else {
+                            \Log::warning('Could not find profile picture to delete', [
+                                'original_path' => $user->profile_picture,
+                                'trimmed_path' => $trimmedPath
+                            ]);
+                        }
+                    }
                 }
 
-                $filePath = $request->file('new_profile_picture')->store('profile_pictures', 'public');
+                // Store new profile picture using the same disk as your other images
+                $filePath = $request->file('new_profile_picture')->store('profile_pictures', 'db-backend');
                 $validatedData['profile_picture'] = $filePath;
+                \Log::info('Stored new profile picture', ['path' => $filePath]);
             }
-    
+
             $user->update($validatedData);
-    
+
             return response()->json([
                 'message' => 'User updated successfully',
                 'user' => $user,
@@ -82,7 +108,7 @@ class UserController extends Controller
             return response()->json(['error' => 'Something went wrong: ' . $e->getMessage()], 500);
         }
     }
-    
+
 
 
     /**
