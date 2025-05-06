@@ -210,3 +210,12 @@ Route::get('images/{path}', [ImageController::class, 'getImage'])
 // Route::get('/quizzes/{id}', [Guest\PublicQuizController::class, 'show']);
 // Route::get('/leaderboard', [Guest\LeaderboardController::class, 'index']);
 
+/*
+|--------------------------------------------------------------------------
+| Additional Leaderboard Routes
+|--------------------------------------------------------------------------
+*/
+Route::post('/attempts', [LeaderboardController::class, 'store']);
+Route::get('/quizzes/{quiz}/leaderboard', [LeaderboardController::class, 'getQuizLeaderboard']);
+Route::get('/leaderboard/global', [LeaderboardController::class, 'getGlobalLeaderboard']);
+
