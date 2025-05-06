@@ -21,9 +21,7 @@ class UserController extends Controller
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
-                'profile_picture' => $user->profile_picture
-                    ? url('api/images/' . $user->profile_picture)
-                    : null,
+                'profile_picture' => $user->profile_picture,
                 'created_at' => $user->created_at,
             ],
             'stats' => [
@@ -64,37 +62,13 @@ class UserController extends Controller
 
             // Handle profile picture upload
             if ($request->hasFile('new_profile_picture')) {
-                // Delete old profile picture if it exists
-                if ($user->profile_picture) {
-                    // Log deletion attempt for debugging
-                    \Log::info('Attempting to delete profile picture:', ['path' => $user->profile_picture]);
 
-                    // Try deleting from both potential storage locations
-                    if (Storage::disk('db-backend')->exists($user->profile_picture)) {
-                        Storage::disk('db-backend')->delete($user->profile_picture);
-                        \Log::info('Deleted profile picture from db-backend disk');
-                    } elseif (Storage::disk('public')->exists($user->profile_picture)) {
-                        Storage::disk('public')->delete($user->profile_picture);
-                        \Log::info('Deleted profile picture from public disk');
-                    } else {
-                        // Path might include 'public/' prefix
-                        $trimmedPath = str_replace('public/', '', $user->profile_picture);
-                        if (Storage::disk('public')->exists($trimmedPath)) {
-                            Storage::disk('public')->delete($trimmedPath);
-                            \Log::info('Deleted profile picture with trimmed path', ['path' => $trimmedPath]);
-                        } else {
-                            \Log::warning('Could not find profile picture to delete', [
-                                'original_path' => $user->profile_picture,
-                                'trimmed_path' => $trimmedPath
-                            ]);
-                        }
-                    }
+                if ($user->profile_picture) {
+                    Storage::disk('public')->delete($user->profile_picture);
                 }
 
-                // Store new profile picture using the same disk as your other images
-                $filePath = $request->file('new_profile_picture')->store('profile_pictures', 'db-backend');
+                $filePath = $request->file('new_profile_picture')->store('profile_pictures', 'public');
                 $validatedData['profile_picture'] = $filePath;
-                \Log::info('Stored new profile picture', ['path' => $filePath]);
             }
 
             $user->update($validatedData);
